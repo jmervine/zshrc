@@ -1,0 +1,102 @@
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:~/Scripts:~/bin:~/sbin:$PATH
+export SVN_EDITOR="vim"
+
+# git alias
+alias gitweb="git instaweb --httpd=webrick"
+
+# Git bash completion
+[ -f ~/.git-bash-completion.sh ] && . ~/.git-bash-completion.sh
+
+# Git show branch
+        RED="\[\033[0;31m\]"
+     YELLOW="\[\033[0;33m\]"
+ 	  GREEN="\[\033[0;32m\]"
+       BLUE="\[\033[0;34m\]"
+  LIGHT_RED="\[\033[1;31m\]"
+LIGHT_GREEN="\[\033[1;32m\]"
+      WHITE="\[\033[1;37m\]"
+ LIGHT_GRAY="\[\033[0;37m\]"
+ COLOR_NONE="\[\e[0m\]"
+
+function parse_git_branch {
+
+  git rev-parse --git-dir &> /dev/null
+  git_status="$(git status 2> /dev/null)"
+  branch_pattern="^# On branch ([^${IFS}]*)"
+  remote_pattern="# Your branch is (.*) of"
+  diverge_pattern="# Your branch and (.*) have diverged"
+  if [[ ! ${git_status}} =~ "working directory clean" ]]; then
+    state="${RED}⚡"
+  fi
+  # add an else if or two here if you want to get more specific
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+      remote="${YELLOW}↑"
+    else
+      remote="${YELLOW}↓"
+    fi
+  fi
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote="${YELLOW}↕"
+  fi
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch=${BASH_REMATCH[1]}
+    echo " (${branch})${remote}${state}"
+  fi
+}
+
+function prompt_func() {
+    previous_return_value=$?;
+    # prompt="${TITLEBAR}$BLUE[$RED\w$GREEN$(__git_ps1)$YELLOW$(git_dirty_flag)$BLUE]$COLOR_NONE "
+    prompt="${TITLEBAR}${BLUE}[${RED}(\!) \u@\h: \w${GREEN}$(parse_git_branch)${BLUE}]${COLOR_NONE} "
+    if test $previous_return_value -eq 0
+    then
+        PS1="${prompt}➔ "
+    else
+        PS1="${prompt}${RED}➔${COLOR_NONE} "
+    fi
+}
+
+PROMPT_COMMAND=prompt_func
+
+# rvm 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
+
+# oracle client
+export DYLD_LIBRARY_PATH="/usr/local/oracle/instantclient_10_2"
+export ARCHFLAGS="-arch x86_64"
+
+# my lshost.rb script 
+alias lshost="ruby /Users/jmervine/Scripts/lshost.rb"
+alias lshosts="ruby /Users/jmervine/Scripts/lshost.rb"
+alias lh="ruby /Users/jmervine/Scripts/lshost.rb"
+
+# history config
+HISTCONTROL=ignoredups:ignorespace
+shopt -s histappend
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# ssh-agent
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+     echo "Initialising new SSH agent..."
+     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+     echo succeeded
+     chmod 600 "${SSH_ENV}"
+     . "${SSH_ENV}" > /dev/null
+     /usr/bin/ssh-add;
+}
+
+# Source SSH settings, if applicable
+
+if [ -f "${SSH_ENV}" ]; then
+     . "${SSH_ENV}" > /dev/null
+     #ps ${SSH_AGENT_PID} doesn't work under cywgin
+     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+         start_agent;
+     }
+else
+     start_agent;
+fi

@@ -1,0 +1,7 @@
+[color]
+	ui = true
+[user]
+	name = Joshua Mervine
+	email = joshua@mervine.net
+[core]
+	editor = vim
