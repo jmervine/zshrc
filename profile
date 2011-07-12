@@ -1,5 +1,23 @@
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:~/Scripts:~/bin:~/sbin:$PATH
 export SVN_EDITOR="vim"
+#export EC2_HOME="$HOME/sbin/ec2"
+export EC2_HOME="$HOME/sbin/ec2"
+export EC2_PRIVATE_KEY="`ls $HOME/.ec2/pk-*.pem`"
+export EC2_CERT="`ls $HOME/.ec2/cert-*.pem`"
+
+# getting fancey with JAVA_HOME
+if [ "`uname`" == "Darwin" ]; then
+	export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Home"
+else
+	if [ -e ~/.javahome ]; then 
+		source ~/.javahome
+	else
+		echo "!!WARNING!!"
+		echo "Can't set JAVA_HOME!"
+		echo "Please create ~/.javahome with valid export command."
+	fi
+fi
+
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$HOME/sbin/ec2/bin:$PATH
 
 # git alias
 alias gitweb="git instaweb --httpd=webrick"
