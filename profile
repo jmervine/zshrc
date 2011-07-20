@@ -3,6 +3,10 @@ export SVN_EDITOR="vim"
 export EC2_HOME="$HOME/sbin/ec2"
 export EC2_PRIVATE_KEY="`ls $HOME/.ec2/pk-*.pem`"
 export EC2_CERT="`ls $HOME/.ec2/cert-*.pem`"
+if [ -e ~/.ec2/ec2keys ]; then
+	source ~/.ec2/ec2keys
+fi
+export AWS_ELB_HOME="$HOME/sbin/elb"
 
 # getting fancey with JAVA_HOME
 if [ "`uname`" == "Darwin" ]; then
@@ -17,7 +21,7 @@ else
 	fi
 fi
 
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$HOME/sbin/ec2/bin:$PATH
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$EC2_HOME/bin:$AWS_ELB_HOME/bin:$PATH
 
 # git alias
 alias gitweb="git instaweb --httpd=webrick"
