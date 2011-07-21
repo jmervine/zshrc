@@ -1,0 +1,3 @@
+bind -v
+bind ^L ed-clear-screen
+
