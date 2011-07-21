@@ -81,6 +81,26 @@ function prompt_func() {
 
 PROMPT_COMMAND=prompt_func
 
+function gitwho() {
+  git_current="`git config --global --get user.email`"
+  if [ "$1" == "" ]; then
+    echo $git_current
+  else
+    if [ "$1" == "switch" ]; then
+      if [ "$git_current" == "joshua@mervine.net" ]; then
+        email="jmervine@attinteractive.com"
+      else
+        email="joshua@mervine.net"
+      fi
+    else
+      email="$1"
+    fi
+    git config --global user.email "$email"
+    git config --global --get user.email
+  fi
+
+}
+
 # rvm 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
@@ -122,3 +142,4 @@ if [ -f "${SSH_ENV}" ]; then
 else
      start_agent;
 fi
+
