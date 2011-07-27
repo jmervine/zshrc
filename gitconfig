@@ -1,7 +1,21 @@
 [color]
-	ui = true
+  ui = true
+
 [user]
-	name = Joshua Mervine
-	email = jmervine@attinteractive.com
+  name = Joshua Mervine
+  email = jmervine@attinteractive.com
+
 [core]
-	editor = vim
+  editor = vim
+
+[push]
+  default = tracking
+
+[alias]
+  st = status
+  cp = cherry-pick
+  co = checkout
+  ci = commit
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  lp = log -p
+
