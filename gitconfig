@@ -3,7 +3,7 @@
 
 [user]
   name = Joshua Mervine
-  email = jmervine@attinteractive.com
+	email = joshua@mervine.net
 
 [core]
   editor = vim
@@ -15,7 +15,12 @@
   st = status
   cp = cherry-pick
   co = checkout
+  cl = checkout -
   ci = commit
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   lp = log -p
+  pa = pull --all
+  ba = branch -a
+  br = branch -r
+  cia = commit -a
 
