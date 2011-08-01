@@ -1,12 +1,29 @@
 export SVN_EDITOR="vim"
-#export EC2_HOME="$HOME/sbin/ec2"
-export EC2_HOME="$HOME/sbin/ec2"
-export EC2_PRIVATE_KEY="`ls $HOME/.ec2/pk-*.pem`"
-export EC2_CERT="`ls $HOME/.ec2/cert-*.pem`"
-if [ -e ~/.ec2/ec2keys ]; then
-	source ~/.ec2/ec2keys
-fi
-export AWS_ELB_HOME="$HOME/sbin/elb"
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$PATH
+
+# cloud switch
+function cloud {
+	echo "setting up \"$1\" cloud environment"
+	echo "------------------------------------------------"
+	case $1 in
+	"aws")
+		# clean up
+		unset `env | grep "AWS\|EC2\|S3" | awk -F= '{ print $1 }' | xargs`
+		source ~/.ec2/awsrc
+		;;
+	"ops")
+		# clean up
+		unset `env | grep "AWS\|EC2\|S3" | awk -F= '{ print $1 }' | xargs`
+		source ~/.ec2/opsrc
+		;;
+	*)
+		echo "Unknown cloud set."
+		;;
+	esac
+	env | grep "AWS\|EC2\|S3"
+	echo "------------------------------------------------"
+}
+cloud ops
 
 # getting fancey with JAVA_HOME
 if [ "`uname`" == "Darwin" ]; then
@@ -20,8 +37,6 @@ else
 		echo "Please create ~/.javahome with valid export command."
 	fi
 fi
-
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$EC2_HOME/bin:$AWS_ELB_HOME/bin:$PATH
 
 # git alias
 alias gitweb="git instaweb --httpd=webrick"
@@ -142,4 +157,3 @@ if [ -f "${SSH_ENV}" ]; then
 else
      start_agent;
 fi
-
