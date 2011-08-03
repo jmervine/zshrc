@@ -20,7 +20,7 @@ function cloud {
 		echo "Unknown cloud set."
 		;;
 	esac
-	env | grep "AWS\|EC2\|S3"
+	env | grep "AWS\|EC2\|S3\|AMAZON" | sort
 	echo "------------------------------------------------"
 }
 cloud ops
@@ -157,3 +157,4 @@ if [ -f "${SSH_ENV}" ]; then
 else
      start_agent;
 fi
+
