@@ -1,5 +1,10 @@
 export SVN_EDITOR="vim"
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:$PATH
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:/Users/jmervine/sbin/homebrew/bin:$PATH
+
+# set bash to vim bind mode
+#set -o vi
+#bind '"":ed-clear-screen'
+#alias cl="clear"
 
 # cloud switch
 function cloud {
