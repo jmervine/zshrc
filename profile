@@ -161,3 +161,18 @@ else
      start_agent;
 fi
 
+function decrypt {
+        # decrypt if selected
+        FILE=$1
+        echo "-> decrypt: $(basename $FILE) "
+        openssl enc -d -aes-256-cbc -salt -in "$FILE" -out "${FILE/.enc/}"
+        FILE=""
+}
+ 
+function encrypt {
+        # encrypt if selected
+        FILE=$1
+        echo "-> encrypt: $(basename $FILE) "
+        openssl enc -e -aes-256-cbc -salt -in "$FILE" -out "$FILE.enc"
+        FILE=""
+}
