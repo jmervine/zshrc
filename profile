@@ -129,9 +129,7 @@ export DYLD_LIBRARY_PATH="/usr/local/oracle/instantclient_10_2"
 export ARCHFLAGS="-arch x86_64"
 
 # my lshost.rb script 
-alias lshost="ruby /Users/jmervine/Scripts/lshost.rb"
-alias lshosts="ruby /Users/jmervine/Scripts/lshost.rb"
-alias lh="ruby /Users/jmervine/Scripts/lshost.rb"
+alias lh="ruby /Users/jmervine/bin/lshost.rb"
 
 # history config
 HISTCONTROL=ignoredups:ignorespace
