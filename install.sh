@@ -47,3 +47,10 @@ do_file "profile"
 do_file "git-bash-completion.sh"
 do_file "gitconfig"
 
+echo ""
+echo "Would you like to install my 'vim-config' as well? [y/N]:"
+read CONTINUE
+if [[ $CONTINUE =~ "y" ]] || [[ $CONTINUE =~ "Y" ]]; then
+	bash < <(curl -s https://raw.github.com/jmervine/vim-config/master/install.sh)
+fi
+
