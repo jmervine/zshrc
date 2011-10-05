@@ -9,6 +9,13 @@
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+if uname -a | grep Darwin > /dev/null
+then
+	BRANCH="master"
+else
+	BRANCH="centos"
+fi
+
 # test to see if I need to checkout code
 if [[ $DIR =~ "dotfiles" ]]; then
 	echo "Looks like I have what I need to set up you, starting."
@@ -24,6 +31,10 @@ else
 	fi
 	DIR="$DIR/dotfiles"
 	cd $DIR
+	if ! git checkout $BRACH; then
+		echo " --> Something's wrong, couldn't checkout $BRANCH, exiting."
+		exit 1
+	fi
 fi
 
 function do_file {
