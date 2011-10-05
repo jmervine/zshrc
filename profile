@@ -6,7 +6,7 @@ export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$H
 #bind '"":ed-clear-screen'
 #alias cl="clear"
 
-if -d ~/sbin; then
+if [ -d ~/sbin ]; then
 	source ~/sbin/cloud_profile
 	source ~/sbin/javarc_profile
 	source ~/sbin/git_profile
