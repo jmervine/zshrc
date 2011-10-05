@@ -1,4 +1,3 @@
-cd <PATH_TO>/dotfiles
-ln -s gitconfig ~/.gitconfig
-ln -s git-bash-completion.sh ~/.git-bash-completion.sh
-ln -s profile ~/.profile (or ~/.bashrc if applicable)
+install using:
+
+$ bash < <(curl -s https://raw.github.com/jmervine/dotfiles/master/install.sh)
