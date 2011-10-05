@@ -130,6 +130,7 @@ export ARCHFLAGS="-arch x86_64"
 
 # my lshost.rb script 
 alias lh="ruby /Users/jmervine/bin/lshost.rb"
+alias lk="~/sbin/list_known.sh"
 
 # history config
 HISTCONTROL=ignoredups:ignorespace
@@ -176,3 +177,17 @@ function encrypt {
         openssl enc -e -aes-256-cbc -salt -in "$FILE" -out "$FILE.enc"
         FILE=""
 }
+
+function clipboard {
+	if [ -e ~/Dropbox/Work/clipboard.txt ]; then 
+		if [ "$1" == "" ]; then
+			cat ~/Dropbox/Work/clipboard.txt
+		else
+			echo "$1" > ~/Dropbox/Work/clipboard.txt
+		fi
+	fi
+}
+
+alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
+
+
