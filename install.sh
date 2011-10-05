@@ -57,5 +57,7 @@ else
 	exit 0
 fi
 
-/bin/bash < <(curl -s https://raw.github.com/jmervine/vim-config/master/install.sh)
+curl -s https://raw.github.com/jmervine/vim-config/master/install.sh > ./vim-install.sh
+/bin/bash vim-install.sh
+
 
