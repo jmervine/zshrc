@@ -16,6 +16,8 @@ else
 	BRANCH="centos"
 fi
 
+echo "Setting branch to '$BRANCH'."
+
 # test to see if I need to checkout code
 if [[ $DIR =~ "dotfiles" ]]; then
 	echo "Looks like I have what I need to set up you, starting."
@@ -31,9 +33,12 @@ else
 	fi
 	DIR="$DIR/dotfiles"
 	cd $DIR
-	if ! git checkout $BRACH; then
-		echo " --> Something's wrong, couldn't checkout $BRANCH, exiting."
-		exit 1
+	if [ "$BRANCH" != "master" ]; then
+		echo "Running git checkout on $BRANCH."
+		if ! git checkout -t remotes/origin/$BRACH; then
+			echo " --> Something's wrong, couldn't checkout $BRANCH, exiting."
+			exit 1
+		fi
 	fi
 fi
 
