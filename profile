@@ -9,9 +9,10 @@ export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$H
 if [ -d ~/sbin ]; then
 	source ~/sbin/cloud_profile
 	source ~/sbin/javarc_profile
-	source ~/sbin/git_profile
 	source ~/sbin/rvm_profile
 fi
+
+source ~/sbin/git_profile
 
 # oracle client
 export DYLD_LIBRARY_PATH="/usr/local/oracle/instantclient_10_2"
