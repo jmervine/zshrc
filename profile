@@ -1,19 +1,13 @@
 export SVN_EDITOR="vim"
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Scripts:$HOME/bin:$HOME/sbin:/Users/jmervine/sbin/homebrew/bin:$PATH
-
-# set bash to vim bind mode
-#set -o vi
-#bind '"":ed-clear-screen'
-#alias cl="clear"
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/bin:$PATH
 
 if [ -d ~/sbin ]; then
-	source ~/sbin/cloud_profile
-	source ~/sbin/java_profile
-	source ~/sbin/rvm_profile
+	source ~/sbin/*_profile
+	export PATH=$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
 fi
 
 if [ -d ~/.bin ]; then
-	source ~/.bin/git_profile
+	source ~/.bin/*_profile
 fi
 
 # oracle client
@@ -71,12 +65,20 @@ function encrypt {
 }
 
 function clipboard {
-	if [ -e ~/Dropbox/Work/clipboard.txt ]; then 
-		if [ "$1" == "" ]; then
-			cat ~/Dropbox/Work/clipboard.txt
+	cb_file="$HOME/Dropbox/Work/clipboard.txt"
+	if [ -e $cb_file ]; then
+		if [ "$1" == "edit" ]; then
+			vi $cb_file 
+			break
 		else
-			echo "$1" > ~/Dropbox/Work/clipboard.txt
+			if [ "$1" == "" ]; then
+				cat $cb_file
+			else
+				echo "$1" > $cb_file
+			fi
 		fi
+	else
+		echo "Exiting: $cb_file not found."
 	fi
 }
 
