@@ -44,22 +44,30 @@ fi
 
 function do_file {
 	file="$1"
+	other="$2"
+	if [ "$other" == "" ]; then
+		other="$file"
+	fi
+
 	# setup  
-	if [ -e $HOME/.$file ]; then
-		if [ -h $HOME/.$file ]; then 
-			echo " --> $HOME/.$file exists and is a symlink, deleting."
-			rm $HOME/.$file
+	if [ -e $HOME/.$other ]; then
+		if [ -h $HOME/.$other ]; then 
+			echo " --> $HOME/.$other exists and is a symlink, deleting."
+			rm $HOME/.$other
 		else
-			echo " --> $HOME/.$file exists and is not a symlink, creating a backup."
-			mv $HOME/.$file $HOME/.$file.old
+			echo " --> $HOME/.$other exists and is not a symlink, creating a backup."
+			mv $HOME/.$other $HOME/.$other.old
 		fi
 	fi
 
-	echo "Creating $HOME/.$file -> $DIR/$file symlink."
-	ln -s $DIR/$file $HOME/.$file
+	echo "Creating $HOME/.$other -> $DIR/$file symlink."
+	ln -s $DIR/$file $HOME/.$other
 }
 
 do_file "profile"
 do_file "git-bash-completion.sh"
 do_file "gitconfig"
+do_file "" "bin"
+
+
 
