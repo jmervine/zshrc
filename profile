@@ -85,3 +85,7 @@ function clipboard {
 
 alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
 
+if [ -e ~/sbin/syncgit.sh ]; then
+	~/sbin/syncgit.sh &
+fi
+
