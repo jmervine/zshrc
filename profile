@@ -2,7 +2,9 @@ export SVN_EDITOR="vim"
 export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/bin:$PATH
 
 if [ -d ~/sbin ]; then
-	source ~/sbin/*_profile
+	source ~/sbin/rvm_profile
+	source ~/sbin/java_profile
+	source ~/sbin/cloud_profile
 	export PATH=$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
 fi
 
@@ -69,7 +71,6 @@ function clipboard {
 	if [ -e $cb_file ]; then
 		if [ "$1" == "edit" ]; then
 			vi $cb_file 
-			break
 		else
 			if [ "$1" == "" ]; then
 				cat $cb_file
