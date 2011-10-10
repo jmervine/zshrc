@@ -12,6 +12,10 @@ if [ -d ~/.bin ]; then
 	source ~/.bin/*_profile
 fi
 
+if [ -e ~/.bin/syncgit.sh ]; then
+	~/.bin/syncgit.sh &
+fi
+
 # oracle client
 export DYLD_LIBRARY_PATH="/usr/local/oracle/instantclient_10_2"
 export ARCHFLAGS="-arch x86_64"
@@ -84,8 +88,4 @@ function clipboard {
 }
 
 alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
-
-if [ -e ~/sbin/syncgit.sh ]; then
-	~/sbin/syncgit.sh &
-fi
 
