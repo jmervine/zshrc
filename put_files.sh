@@ -5,6 +5,6 @@ files=( .aliasrc  .functionrc  .git-bash-completion.sh  .gitconfig  .gitignore  
 
 for f in "${files[@]}"
 do
-        echo "cp $f ~/$f"
+        echo "cp $f ~/$f" && cp $f ~/$f
 done
 
