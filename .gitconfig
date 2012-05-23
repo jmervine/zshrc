@@ -2,7 +2,7 @@
   ui = true
 
 [user]
-  name = Joshua Mervine
+	name = Joshua Mervine
 	email = joshua@mervine.net
 
 [core]
@@ -23,4 +23,8 @@
   ba = branch -a
   br = branch -r
   cia = commit -a
+  ciaa = commit -a --amend
+  wtf = blame
 
+[github]
+	user = jmervine

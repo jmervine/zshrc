@@ -1,0 +1,47 @@
+#############################################################
+# Aliases
+#############################################################
+#
+# print time
+alias t="date +%H:%M"
+
+# print date
+alias d="date +%b-%d-%Y"
+
+# print date and time
+alias dt="echo $(date +%b-%d-%Y) @ $(date +%H:%M)"
+
+# tmux reattach shortcut
+alias tmuxr="tmux attach-session"
+
+# sync_home.sh shortcut
+alias sync="~/bin/sync_home.sh"
+
+# bundle exec shortcut
+alias be="bundle exec"
+
+# bundle install shortcut
+alias bi="bundle install --path ./vendor/bundle"
+
+# bundle update shortcut
+alias bu="bundle update"
+
+# rpsec shortcut
+alias brs="bundle exec rspec -f d -c" 
+
+# rspec shortcut
+alias rspecv="rspec -c -fd"
+
+# ls colors shortcut
+ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
+
+# mvim => gvim
+[[ -e ~/bin/mvim ]] && alias gvim="~/bin/mvim"
+
+# source profile shortcut
+alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
+
+# shortcut to quicly remove vim temp files
+alias rmswp='find . -type f -name *.swp | xargs rm -v'
+
+alias ack="ack-grep"

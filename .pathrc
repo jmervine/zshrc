@@ -1,0 +1,19 @@
+#############################################################
+# Pathing
+#############################################################
+export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/bin:$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
+
+#############################################################
+# MacPorts configuration
+#############################################################
+#
+# MacPorts Installer addition on 2011-10-18_at_08:41:30: adding an appropriate PATH variable for use with MacPorts.
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+
+
+#############################################################
+# RVM Environment
+#############################################################
+#
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
+

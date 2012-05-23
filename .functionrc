@@ -1,0 +1,80 @@
+#############################################################
+## !! WARNING!!!
+#
+#  These functions are shared between bash and zsh, don't
+#  forget to test them in both shells.
+#
+#  If you need to do something specific for one or the other
+#  move it in to either .profile (bash) or .zshrc (zsh).
+#
+#############################################################
+
+#############################################################
+# Encryption Fuctions
+#############################################################
+#
+function decrypt {
+        # decrypt if selected
+        FILE=$1
+        echo "-> decrypt: $(basename $FILE) "
+        openssl enc -d -aes-256-cbc -salt -in "$FILE" -out "${FILE/.enc/}"
+        FILE=""
+}
+ 
+function encrypt {
+        # encrypt if selected
+        FILE=$1
+        echo "-> encrypt: $(basename $FILE) "
+        openssl enc -e -aes-256-cbc -salt -in "$FILE" -out "$FILE.enc"
+        FILE=""
+}
+
+#############################################################
+# Function -- which to handle functions and aliases
+#############################################################
+#
+function which {
+	if ! /usr/bin/which $1
+	then
+		type $1 | head -1
+	fi
+}
+
+
+#############################################################
+# Function - quickly add strings to root .gitignore
+#############################################################
+#
+function gitignore {
+	echo "$1" >> $HOME/.gitignore
+}
+
+
+
+#############################################################
+# SSH Agent Setup
+#############################################################
+#
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+     echo "Initialising new SSH agent..."
+     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+     echo succeeded
+     chmod 600 "${SSH_ENV}"
+     . "${SSH_ENV}" > /dev/null
+     /usr/bin/ssh-add;
+}
+
+# Source SSH settings, if applicable
+if [ -f "${SSH_ENV}" ]; then
+     . "${SSH_ENV}" > /dev/null
+     #ps ${SSH_AGENT_PID} doesn't work under cywgin
+     ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+         start_agent;
+     }
+else
+     start_agent;
+fi
+
+
