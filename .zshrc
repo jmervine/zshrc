@@ -1,6 +1,7 @@
 [[ -e ~/.localrc ]] && . ~/.localrc # run first
 
-export EDITOR=vi
+export EDITOR=vim
+bindkey -e 
 
 ###############################################################
 # Completion
