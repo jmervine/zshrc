@@ -108,4 +108,4 @@ function precmd() {
 autoload -U colors && colors
 
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+PATH=$PATH:$HOME/.rvm/bin:$HOME/Scripts # Add RVM to PATH for scripting

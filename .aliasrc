@@ -44,4 +44,6 @@ alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
 # shortcut to quicly remove vim temp files
 alias rmswp='find . -type f -name *.swp | xargs rm -v'
 
-alias ack="ack-grep"
+#alias ack="ack-grep"
+
+function sublime() { /usr/bin/sublime "$@" &; }

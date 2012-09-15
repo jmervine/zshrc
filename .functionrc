@@ -50,6 +50,40 @@ function gitignore {
 }
 
 
+#############################################################
+# Function - Finding files and directories 
+#############################################################
+#
+function ff() {
+        echo "Running: find . -type f -name \"$1\""
+        find . -type f -name "$1"
+        echo " "
+        echo "Done."
+}
+
+function ffo() {
+        find . -type f -name "$1" | xargs vim
+}
+
+function ffg() {
+        find . -type f -name "$1" | xargs gvim
+}
+
+function fd() {
+        echo "Running: find . -type f -name \"$1\""
+        find . -type d -name "$1"
+        echo " "
+        echo "Done."
+}
+
+function fdo() {
+        find . -type d -name "$1" | xargs vim
+}
+
+function fdg() {
+        find . -type d -name "$1" | xargs gvim
+}
+
 
 #############################################################
 # SSH Agent Setup

@@ -10,6 +10,11 @@ export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/bin:$HOME/
 # MacPorts Installer addition on 2011-10-18_at_08:41:30: adding an appropriate PATH variable for use with MacPorts.
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 
+#############################################################
+# Python Libraries
+#############################################################
+#
+export PYTHONPATH=/home/jmervine/Scripts/python/lib:$PYTHONPATH
 
 #############################################################
 # RVM Environment
