@@ -1,7 +1,7 @@
 [[ -e ~/.localrc ]] && . ~/.localrc # run first
 
 export EDITOR=vim
-bindkey -e 
+bindkey -v
 
 ###############################################################
 # Completion
