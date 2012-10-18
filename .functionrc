@@ -67,26 +67,26 @@ function ff() {
 }
 
 function ffo() {
-        find . -type f -name "$1" | xargs vim
+        find . -type f -name "*$1*" | xargs vim
 }
 
 function ffg() {
-        find . -type f -name "$1" | xargs gvim
+        find . -type f -name "*$1*" | xargs gvim
 }
 
 function fd() {
-        echo "Running: find . -type f -name \"$1\""
-        find . -type d -name "$1"
+        echo "Running: find . -type f -name \"*$1*\""
+        find . -type d -name "*$1*"
         echo " "
         echo "Done."
 }
 
 function fdo() {
-        find . -type d -name "$1" | xargs vim
+        find . -type d -name "*$1*" | xargs vim
 }
 
 function fdg() {
-        find . -type d -name "$1" | xargs gvim
+        find . -type d -name "*$1*" | xargs gvim
 }
 
 
@@ -116,4 +116,10 @@ else
      start_agent;
 fi
 
+
+function upload_yp_gem() {
+        test -e $1 || exit 1
+        echo "curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )"
+        curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )
+}
 

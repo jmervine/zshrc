@@ -1,7 +1,15 @@
 #############################################################
 # Aliases
 #############################################################
-#
+
+alias g="gvim"
+
+alias gd="gvimdiff"
+
+alias v="vim"
+
+alias vd="vimdiff"
+
 # print time
 alias t="date +%H:%M"
 
@@ -47,4 +55,6 @@ alias rmswp='find . -type f -name *.swp | xargs rm -v'
 #alias ack="ack-grep"
 
 function sublime() { /usr/bin/sublime "$@" &; }
+
+function retext() { /usr/bin/retext "$@" &; }
 

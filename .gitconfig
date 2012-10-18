@@ -2,8 +2,8 @@
   ui = true
 
 [user]
-	name = Joshua Mervine
-	email = joshua@mervine.net
+	name = Josh Mervine
+	email = jmervine@yp.com
 
 [core]
   editor = vim

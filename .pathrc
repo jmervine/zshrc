@@ -1,7 +1,7 @@
 #############################################################
 # Pathing
 #############################################################
-export PATH=/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/bin:$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
+export PATH=/opt/oracle/instantclient_11_1:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Development/traffic_light_py_gui/bin:$HOME/bin:$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
 
 #############################################################
 # MacPorts configuration
@@ -21,4 +21,12 @@ export PYTHONPATH=/home/jmervine/Scripts/python/lib:$PYTHONPATH
 #############################################################
 #
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
+
+
+#############################################################
+# LD_LIBRARY_PATH
+#############################################################
+#
+
+export LD_LIBRARY_PATH=/opt/oracle/instantclient_11_1
 

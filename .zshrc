@@ -2,6 +2,7 @@
 
 export EDITOR=vim
 bindkey -v
+bindkey '^R' history-incremental-search-backward
 
 ###############################################################
 # Completion
@@ -96,12 +97,23 @@ function ruby_version {
         echo `ruby -v | cut -d " " -f 2` 2>/dev/null
 }
 
+function zle-line-init zle-keymap-select {
+    local old_ps1="${PS1:0:-2}"
+    PS1="$old_ps1${${KEYMAP/vicmd/:}/(main|viins)/$} "
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
 function precmd() {
         local p_git_branch="`git_branch`"
         local p_ruby_version="ruby-`ruby_version`%{$reset_color%}"
         local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-        PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~ %{$reset_color%}$ "
+        test "$PS_SIGN" || export PS_SIGN="[I] "
+
+        PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~%{$reset_color%} $ "
+        #PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~ %{$reset_color%}${PS_SIGN} "
         RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [ ${p_git_branch}%{$reset_color%} | ${p_ruby_version} |%t ]"
 }
 
