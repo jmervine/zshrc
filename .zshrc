@@ -73,7 +73,7 @@ function git_branch {
         if [[ ! ${git_status} =~ "working directory clean" ]]; then
             state=" ${RED}⚡"
         fi
-        
+
         if [[ ${git_status} =~ ${remote_pattern} ]]; then
             if [[ ${git_status} =~ ${ahead_pattern} ]]; then
               remote=" ${YELLOW}↑"
@@ -90,20 +90,23 @@ function git_branch {
             branch="`git_branch_string`"
             echo " ${branch}${remote}${state}"
         fi
-        
+
 }
 
 function ruby_version {
         echo `ruby -v | cut -d " " -f 2` 2>/dev/null
 }
 
-function zle-line-init zle-keymap-select {
-    local old_ps1="${PS1:0:-2}"
-    PS1="$old_ps1${${KEYMAP/vicmd/:}/(main|viins)/$} "
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
+if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' $1 >= 4 && $2 >= 3 && $3 >= 17 ' )"
+then
+  function zle-line-init zle-keymap-select {
+      local old_ps1="${PS1:0:-2}"
+      PS1="$old_ps1${${KEYMAP/vicmd/:}/(main|viins)/$} "
+      zle reset-prompt
+  }
+  zle -N zle-line-init
+  zle -N zle-keymap-select
+fi
 
 function precmd() {
         local p_git_branch="`git_branch`"
