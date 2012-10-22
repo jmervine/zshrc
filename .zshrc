@@ -97,7 +97,7 @@ function ruby_version {
         echo `ruby -v | cut -d " " -f 2` 2>/dev/null
 }
 
-if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' $1 >= 4 && $2 >= 3 && $3 >= 17 ' )"
+if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' ( $1 > 4 || ( $1 == 4 && $2 > 3 ) || ( $1 == 4 && $2 == 3 && $3 >= 17 ) ) ' )"
 then
   function zle-line-init zle-keymap-select {
       local old_ps1="${PS1:0:-2}"
