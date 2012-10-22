@@ -2,13 +2,12 @@
 # Aliases
 #############################################################
 
-alias g="gvim"
 
-alias gd="gvimdiff"
-
-alias v="vim"
-
-alias vd="vimdiff"
+# vi aliases
+alias vi="/usr/bin/vim"
+alias vidiff="/usr/bin/vimdiff"
+alias vim="/usr/bin/gvim"
+alias vimdiff="/usr/bin/gvimdiff"
 
 # print time
 alias t="date +%H:%M"
@@ -35,7 +34,7 @@ alias bi="bundle install --path ./vendor/bundle"
 alias bu="bundle update"
 
 # rpsec shortcut
-alias brs="bundle exec rspec -f d -c" 
+alias brs="bundle exec rspec -f d -c"
 
 # rspec shortcut
 alias rspecv="rspec -c -fd"
