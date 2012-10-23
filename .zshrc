@@ -12,7 +12,11 @@ COMPLETION_WAITING_DOTS="true"
 setopt bash_autolist
 autoload -U compinit && compinit
 zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tty,cmd'
-zstyle ':completion:*' hosts off
+
+local knownhosts
+knownhosts=( ${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*} )
+zstyle ':completion:*:(ssh|scp|sftp):*' hosts $knownhosts
+#zstyle ':completion:*' hosts off
 autoload -U zmv
 
 
