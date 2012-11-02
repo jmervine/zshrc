@@ -6,8 +6,6 @@
 # vi aliases
 alias vi="/usr/bin/vim"
 alias vidiff="/usr/bin/vimdiff"
-alias vim="/usr/bin/gvim"
-alias vimdiff="/usr/bin/gvimdiff"
 
 # print time
 alias t="date +%H:%M"
