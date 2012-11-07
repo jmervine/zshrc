@@ -39,10 +39,10 @@ function encrypt {
 #############################################################
 #
 function which {
-	if ! /usr/bin/which $1
-	then
-		type $1 | head -1
-	fi
+    if ! /usr/bin/which $1
+    then
+        type $1 | head -1
+    fi
 }
 
 
@@ -51,7 +51,7 @@ function which {
 #############################################################
 #
 function gitignore {
-	echo "$1" >> $HOME/.gitignore
+    echo "$1" >> $HOME/.gitignore
 }
 
 
@@ -136,3 +136,23 @@ function vimdiff() {
   /usr/bin/gvimdiff -f "$@" &
 }
 
+function do_pry() {
+  PRYCMD="$(which pry)"
+  IRBCMD="$(which irb)"
+  if test -e "$(which pry)"
+  then
+    echo "Starting $PRYCMD"
+    $PRYCMD
+  else
+    echo "Starting $IRBCMD"
+    $IRBCMD
+  fi
+}
+
+function irb() {
+  do_pry
+}
+
+function pry() {
+  do_pry
+}
