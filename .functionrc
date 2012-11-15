@@ -11,7 +11,7 @@
 
 
 function tm() {
-        tmux attach-session || tmux
+        tmux attach-session || (cd ~/Development/; tmux )
 }
 
 #############################################################
@@ -120,6 +120,14 @@ function upload_yp_gem() {
         curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )
 }
 
+function svim() {
+  /usr/bin/gvim -f "sudo:$@"
+}
+
+function svi() {
+  /usr/bin/vim -f "sudo:$@"
+}
+
 function gvim() {
   /usr/bin/gvim -f "$@" &
 }
@@ -155,4 +163,8 @@ function irb() {
 
 function pry() {
   do_pry
+}
+
+function _irb() {
+  command irb
 }
