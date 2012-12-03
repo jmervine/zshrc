@@ -53,6 +53,7 @@ Pry.commands.alias_command 'f', 'finish'
 Pry.commands.alias_command 'cat', 'show-method'
 Pry.commands.alias_command 'vi', 'edit-method'
 Pry.commands.alias_command 'vim', 'edit-method'
+Pry.commands.alias_command 'pwd', 'whereami'
 
 #
 # Editor
