@@ -11,7 +11,7 @@
 
 
 function tm() {
-        tmux attach-session || tmux
+        tmux attach-session || (cd ~/Development/; tmux )
 }
 
 #############################################################
@@ -25,7 +25,7 @@ function decrypt {
         openssl enc -d -aes-256-cbc -salt -in "$FILE" -out "${FILE/.enc/}"
         FILE=""
 }
- 
+
 function encrypt {
         # encrypt if selected
         FILE=$1
@@ -39,10 +39,10 @@ function encrypt {
 #############################################################
 #
 function which {
-	if ! /usr/bin/which $1
-	then
-		type $1 | head -1
-	fi
+    if ! /usr/bin/which $1
+    then
+        type $1 | head -1
+    fi
 }
 
 
@@ -51,19 +51,16 @@ function which {
 #############################################################
 #
 function gitignore {
-	echo "$1" >> $HOME/.gitignore
+    echo "$1" >> $HOME/.gitignore
 }
 
 
 #############################################################
-# Function - Finding files and directories 
+# Function - Finding files and directories
 #############################################################
 #
 function ff() {
-        echo "Running: find . -type f -name \"$1\""
-        find . -type f -name "$1"
-        echo " "
-        echo "Done."
+        find . -type f -name "*$1*"
 }
 
 function ffo() {
@@ -71,7 +68,7 @@ function ffo() {
 }
 
 function ffg() {
-        find . -type f -name "*$1*" | xargs gvim
+        find . -type f -name "*$1*" | xargs gvim -f
 }
 
 function fd() {
@@ -123,3 +120,51 @@ function upload_yp_gem() {
         curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )
 }
 
+function svim() {
+  /usr/bin/gvim -f "sudo:$@"
+}
+
+function svi() {
+  /usr/bin/vim -f "sudo:$@"
+}
+
+function gvim() {
+  /usr/bin/gvim -f "$@" &
+}
+
+function vim() {
+  /usr/bin/gvim -f "$@" &
+}
+
+function gvimdiff() {
+  /usr/bin/gvimdiff -f "$@" &
+}
+
+function vimdiff() {
+  /usr/bin/gvimdiff -f "$@" &
+}
+
+function do_pry() {
+  PRYCMD="$(which pry)"
+  IRBCMD="$(which irb)"
+  if test -e "$(which pry)"
+  then
+    echo "Starting $PRYCMD"
+    $PRYCMD
+  else
+    echo "Starting $IRBCMD"
+    $IRBCMD
+  fi
+}
+
+function irb() {
+  do_pry
+}
+
+function pry() {
+  do_pry
+}
+
+function _irb() {
+  command irb
+}
