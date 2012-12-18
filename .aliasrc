@@ -4,10 +4,12 @@
 
 
 # vi aliases
-alias vi="/usr/bin/vim"
-alias vidiff="/usr/bin/vimdiff"
-alias vim="/usr/bin/gvim"
-alias vimdiff="/usr/bin/gvimdiff"
+if [[ $(uname) != "Darwin" ]];then
+        alias vi="/usr/bin/vim"
+        alias vidiff="/usr/bin/vimdiff"
+        alias vim="/usr/bin/gvim"
+        alias vimdiff="/usr/bin/gvimdiff"
+fi
 
 # print time
 alias t="date +%H:%M"
