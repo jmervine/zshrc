@@ -1,3 +1,10 @@
+load '/home/jmervine/Development/scratch/pry_libs/pry_libs.rb'
+Kernel.at_exit do
+  puts " "
+  puts "History saved to: ~/.pry_history"
+  puts "Good bye Josh!"
+end
+
 #
 # Misc Config
 #
@@ -46,14 +53,14 @@ end
 #
 # Aliases
 #
-Pry.commands.alias_command 'c', 'continue'
-Pry.commands.alias_command 's', 'step'
-Pry.commands.alias_command 'n', 'next'
-Pry.commands.alias_command 'f', 'finish'
-Pry.commands.alias_command 'cat', 'show-method'
-Pry.commands.alias_command 'vi', 'edit-method'
-Pry.commands.alias_command 'vim', 'edit-method'
-Pry.commands.alias_command 'pwd', 'whereami'
+#Pry.commands.alias_command 'c', 'continue'
+#Pry.commands.alias_command 's', 'step'
+#Pry.commands.alias_command 'n', 'next'
+#Pry.commands.alias_command 'f', 'finish'
+#Pry.commands.alias_command 'cat', 'show-method'
+#Pry.commands.alias_command 'vi', 'edit-method'
+#Pry.commands.alias_command 'vim', 'edit-method'
+#Pry.commands.alias_command 'pwd', 'whereami'
 
 #
 # Editor

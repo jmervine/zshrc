@@ -4,8 +4,8 @@
 
 
 # vi aliases
-alias vi="/usr/bin/vim"
-alias vidiff="/usr/bin/vimdiff"
+alias vi="/usr/bin/vim -X"
+alias vidiff="/usr/bin/vimdiff -X"
 
 # print time
 alias t="date +%H:%M"
@@ -55,3 +55,21 @@ function sublime() { /usr/bin/sublime "$@" &; }
 
 function retext() { /usr/bin/retext "$@" &; }
 
+
+# rails console aliases
+alias console="script/console --irb=pry"
+
+# git aliases
+alias gco="git checkout"
+alias gpush="git push"
+alias gup="git push"
+alias gpull="git pull"
+alias gpu="git pull"
+alias gmerge="git merge"
+alias gstash="git stash"
+alias gstatus="git status"
+alias gst="git status"
+alias gdiff="git diff"
+alias gcp="git cp"
+alias gmv="git mv"
+alias grm="git rm"

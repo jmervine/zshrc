@@ -168,3 +168,12 @@ function pry() {
 function _irb() {
   command irb
 }
+
+function npm_exec() {
+  ./node_modules/.bin/$@
+}
+
+function yp {
+  cd ~/Development/yp
+  rvm use 2.0.0
+}
