@@ -170,10 +170,23 @@ function _irb() {
 }
 
 function npm_exec() {
-  ./node_modules/.bin/$@
+  PATH=$(npm bin):$PATH $@
 }
 
-function yp {
-  cd ~/Development/yp
-  rvm use 2.0.0
+function ypu {
+  cd ~/Development/cbyp
 }
+
+function ypc {
+  cd ~/Development/yp
+}
+
+function cms {
+  cd ~/Development/personal/mervine.net/content/pages/
+  rvm use ruby-1.9.3-p392
+}
+
+function tmp {
+  cd ~/Development/tmp
+}
+
