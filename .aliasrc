@@ -88,3 +88,5 @@ alias tst="tig status"
 alias tshow="tig show"
 alias tblame="tig blame"
 alias tbl="tig blame"
+
+alias bye="sudo shutdown -h now"
