@@ -98,7 +98,15 @@ function git_branch {
 }
 
 function ruby_version {
-        echo `ruby -v | cut -d " " -f 2` 2>/dev/null
+  if test -f Gemfile || test "$(find . -maxdepth 1 -type f -name "*.rb")"; then
+    echo "| %{$fg[red]%}`ruby -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
+  fi
+}
+
+function node_version {
+  if test -f package.json || test "$(find . -maxdepth 1 -type f -name "*.js")"; then
+    echo "| %{$fg[green]%}`node -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
+  fi
 }
 
 if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' ( $1 > 4 || ( $1 == 4 && $2 > 3 ) || ( $1 == 4 && $2 == 3 && $3 >= 17 ) ) ' )"
@@ -114,14 +122,18 @@ fi
 
 function precmd() {
         local p_git_branch="`git_branch`"
-        local p_ruby_version="ruby-`ruby_version`%{$reset_color%}"
+        if test "${p_git_branch}"
+        then
+          local p_git_branch=" ${p_git_branch}%{$reset_color%} "
+        else
+          local p_git_branch=" %T "
+        fi
         local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
         test "$PS_SIGN" || export PS_SIGN="[I] "
 
         PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~%{$reset_color%} $ "
-        #PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~ %{$reset_color%}${PS_SIGN} "
-        RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [ ${p_git_branch}%{$reset_color%} | ${p_ruby_version} |%t ]"
+        RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [${p_git_branch}`ruby_version``node_version`]"
 }
 
 autoload -U colors && colors
