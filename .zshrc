@@ -124,7 +124,7 @@ function precmd() {
         local p_git_branch="`git_branch`"
         if test "${p_git_branch}"
         then
-          local p_git_branch=" ${p_git_branch}%{$reset_color%} "
+          local p_git_branch="${p_git_branch}%{$reset_color%} "
         else
           local p_git_branch=" %T "
         fi
