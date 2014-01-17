@@ -8,3 +8,8 @@ do
   test -f $file && \
     ln -v -s $(pwd)/$file ~/$file
 done
+file=.gitconfig
+test -L ~/$file && rm -v ~/$file
+test -f ~/$file && mv -v ~/$file ~/$file.bak
+test -f $file && \
+ln -v -s $(pwd)/$file ~/$file
