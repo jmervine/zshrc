@@ -6,6 +6,8 @@
 # vi aliases
 alias vi="/usr/bin/vim -X"
 alias vidiff="/usr/bin/vimdiff -X"
+#alias gvim="gnome-terminal -e /usr/bin/vim -X"
+#alias gvimdiff="gnome-terminal -e /usr/bin/vim -X"
 
 # print time
 alias t="date +%H:%M"

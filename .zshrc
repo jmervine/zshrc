@@ -140,3 +140,5 @@ autoload -U colors && colors
 
 
 PATH=$PATH:$HOME/.rvm/bin:$HOME/Scripts # Add RVM to PATH for scripting
+
+export PATH=/home/jmervine/.bin:$PATH # Add CLIunit to PATH
