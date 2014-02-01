@@ -139,5 +139,5 @@ function precmd() {
 
 autoload -U colors && colors
 
-PATH=/home/jmervine/.bin:$PATH # Add CLIunit to PATH
+PATH=$HOME/.bin:$HOME/scripts:$HOME/bin:$PATH
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
