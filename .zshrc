@@ -19,7 +19,6 @@ zstyle ':completion:*:(ssh|scp|sftp):*' hosts $knownhosts
 #zstyle ':completion:*' hosts off
 autoload -U zmv
 
-
 ###############################################################
 # Externals
 ###############################################################
@@ -52,49 +51,51 @@ setopt AUTO_PUSHD
 ###############################################################
 alias src=". ~/.zshrc"
 
-
 ###############################################################
 # Prompt
 ###############################################################
 function git_branch_string {
-        echo "`git status | grep "^# On branch .*$" | cut -d " " -f 4`"
+  if [[ $(git --version) > 1.8.5 ]]
+  then
+    echo "$(git status | grep "On branch .*$" | cut -d " " -f 3)"
+  else
+    echo "$(git status | grep "^#On branch .*$" | cut -d " " -f 3)"
+  fi
 }
 
 function git_branch {
+  RED="%{$fg[red]%}"
+  GREEN="%{$fg[green]%}"
+  YELLOW="%{$fg[yellow]%}"
 
-        RED="%{$fg[red]%}"
-        GREEN="%{$fg[green]%}"
-        YELLOW="%{$fg[yellow]%}"
+  git rev-parse --git-dir &> /dev/null
 
-        git rev-parse --git-dir &> /dev/null
+  git_status="$(git status 2> /dev/null)"
+  branch_pattern="On branch (.*)$"
+  remote_pattern="Your branch is (.*) of"
+  diverge_pattern="Your branch and (.*) have diverged"
+  ahead_pattern="Your branch is ahead of"
 
-        git_status="$(git status 2> /dev/null)"
-        branch_pattern="^# On branch (.*)$"
-        remote_pattern="# Your branch is (.*) of"
-        diverge_pattern="# Your branch and (.*) have diverged"
-        ahead_pattern="^# Your branch is ahead of"
+  if [[ ! ${git_status} =~ "working directory clean" ]]; then
+    state=" ${RED}⚡"
+  fi
 
-        if [[ ! ${git_status} =~ "working directory clean" ]]; then
-            state=" ${RED}⚡"
-        fi
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${git_status} =~ ${ahead_pattern} ]]; then
+      remote=" ${YELLOW}↑"
+    else
+      remote=" ${YELLOW}↓"
+    fi
+  fi
 
-        if [[ ${git_status} =~ ${remote_pattern} ]]; then
-            if [[ ${git_status} =~ ${ahead_pattern} ]]; then
-              remote=" ${YELLOW}↑"
-            else
-              remote=" ${YELLOW}↓"
-            fi
-        fi
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote=" ${YELLOW}↕"
+  fi
 
-        if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-            remote=" ${YELLOW}↕"
-        fi
-
-        if [[ ${git_status} =~ ${branch_pattern} ]]; then
-            branch="`git_branch_string`"
-            echo " ${branch}${remote}${state}"
-        fi
-
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch="`git_branch_string`"
+    echo " ${branch}${remote}${state}"
+  fi
 }
 
 function ruby_version {
@@ -138,7 +139,5 @@ function precmd() {
 
 autoload -U colors && colors
 
-
-PATH=$PATH:$HOME/.rvm/bin:$HOME/Scripts # Add RVM to PATH for scripting
-
-export PATH=/home/jmervine/.bin:$PATH # Add CLIunit to PATH
+PATH=/home/jmervine/.bin:$PATH # Add CLIunit to PATH
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
