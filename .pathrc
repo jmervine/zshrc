@@ -32,7 +32,16 @@ export LD_LIBRARY_PATH=/opt/oracle/instantclient_11_1
 export JAVA_HOME=/usr/local/java/jre1.7.0_21/
 
 #############################################################
-# JAVA_HOME
+# GOPATH
 #############################################################
-export GOPATH=/home/jmervine/.go
+export GOPATH=$HOME/.go
+export GOBIN=$HOME/.bin
+
+#############################################################
+# RBENV
+#############################################################
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
 # vim: ft=sh:
+
