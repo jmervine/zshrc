@@ -125,7 +125,7 @@ function svim() {
 }
 
 function svi() {
-  /usr/bin/vim -f "sudo:$@"
+  /usr/local/bin/vim -f "sudo:$@"
 }
 
 function gvim() {
@@ -191,8 +191,8 @@ function tmp {
 }
 
 function mail {
-  nohup /usr/bin/chromium-browser \
-    --user-agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:23.0) Gecko/20100101 Firefox/23.0" \
+  nohup /usr/bin/google-chrome \
+    --user-agent="Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0" \
     "http://mail.yp.com/" &> /dev/null &
 }
 
