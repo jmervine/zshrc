@@ -57,7 +57,12 @@ alias src=". ~/.zshrc"
 function git_branch_string {
   if [[ $(git --version) > 1.8.5 ]]
   then
-    echo "$(git status | grep "On branch .*$" | cut -d " " -f 3)"
+    if [[ $(git --version) > 2.0.0 ]]
+    then
+      echo "$(git status | grep "^# On branch .*$" | cut -d " " -f 4)"
+    else
+      echo "$(git status | grep "On branch .*$" | cut -d " " -f 3)"
+    fi
   else
     echo "$(git status | grep "^#On branch .*$" | cut -d " " -f 3)"
   fi

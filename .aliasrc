@@ -4,8 +4,8 @@
 
 
 # vi aliases
-alias vi="/usr/local/bin/vim -X"
-alias vidiff="/usr/local/bin/vimdiff -X"
+alias vi="/usr/bin/vim -X"
+alias vidiff="/usr/bin/vimdiff -X"
 #alias gvim="gnome-terminal -e /usr/bin/vim -X"
 #alias gvimdiff="gnome-terminal -e /usr/bin/vim -X"
 
