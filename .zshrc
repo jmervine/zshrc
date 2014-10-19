@@ -55,52 +55,54 @@ alias src=". ~/.zshrc"
 # Prompt
 ###############################################################
 function git_branch_string {
-  if [[ $(git --version) > 1.8.5 ]]
-  then
-    if [[ $(git --version) > 2.0.0 ]]
-    then
-      echo "$(git status | grep "^# On branch .*$" | cut -d " " -f 4)"
-    else
-      echo "$(git status | grep "On branch .*$" | cut -d " " -f 3)"
-    fi
-  else
-    echo "$(git status | grep "^#On branch .*$" | cut -d " " -f 3)"
-  fi
+        stat=`git status`
+        if test "$(echo $stat | grep "^# On branch")"; then
+          echo "`git status | grep "^# On branch .*$" | cut -d " " -f 4`"
+        else
+          echo "`git status | grep "^On branch .*$" | cut -d " " -f 3`"
+        fi
 }
 
 function git_branch {
-  RED="%{$fg[red]%}"
-  GREEN="%{$fg[green]%}"
-  YELLOW="%{$fg[yellow]%}"
 
-  git rev-parse --git-dir &> /dev/null
+        RED="%{$fg[red]%}"
+        GREEN="%{$fg[green]%}"
+        YELLOW="%{$fg[yellow]%}"
 
-  git_status="$(git status 2> /dev/null)"
-  branch_pattern="On branch (.*)$"
-  remote_pattern="Your branch is (.*) of"
-  diverge_pattern="Your branch and (.*) have diverged"
-  ahead_pattern="Your branch is ahead of"
+        git rev-parse --git-dir &> /dev/null
 
-  if [[ ! ${git_status} =~ "working directory clean" ]]; then
-    state=" ${RED}⚡"
-  fi
+        git_status="$(git status 2> /dev/null)"
+        #echo "git_status:\n$git_status"
 
-  if [[ ${git_status} =~ ${remote_pattern} ]]; then
-    if [[ ${git_status} =~ ${ahead_pattern} ]]; then
-      remote=" ${YELLOW}↑"
-    else
-      remote=" ${YELLOW}↓"
-    fi
-  fi
+        branch_pattern="^On branch (.*)$"
+        if ! test "$branch_pattern"; then
+          branch_pattern="^# On branch (.*)$"
+        fi
 
-  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-    remote=" ${YELLOW}↕"
-  fi
+        remote_pattern="# Your branch is (.*) of"
+        diverge_pattern="# Your branch and (.*) have diverged"
+        ahead_pattern="^# Your branch is ahead of"
 
-  if [[ ${git_status} =~ ${branch_pattern} ]]; then
-    branch="`git_branch_string`"
-    echo " ${branch}${remote}${state}"
-  fi
+        if [[ ! ${git_status} =~ "working directory clean" ]]; then
+            state=" ${RED}⚡"
+        fi
+
+        if [[ ${git_status} =~ ${remote_pattern} ]]; then
+            if [[ ${git_status} =~ ${ahead_pattern} ]]; then
+              remote=" ${YELLOW}↑"
+            else
+              remote=" ${YELLOW}↓"
+            fi
+        fi
+
+        if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+            remote=" ${YELLOW}↕"
+        fi
+
+        if [[ ${git_status} =~ ${branch_pattern} ]]; then
+            branch="`git_branch_string`"
+            echo " ${branch}${remote}${state}"
+        fi
 }
 
 function ruby_version {
