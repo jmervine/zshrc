@@ -34,14 +34,15 @@ export JAVA_HOME=/usr/local/java/jre1.7.0_21/
 #############################################################
 # GOPATH
 #############################################################
+export PATH=/usr/local/go/bin:${PATH}
 export GOPATH=$HOME/.go
 export GOBIN=$HOME/.bin
 
 #############################################################
 # RBENV
 #############################################################
-#export PATH="$HOME/.rbenv/bin:$PATH"
-#eval "$(rbenv init -)"
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
 
 # vim: ft=sh:
-

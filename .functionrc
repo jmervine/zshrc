@@ -177,6 +177,10 @@ function ypu {
   cd ~/Development/yp
 }
 
+function ypm {
+  cd ~/Development/ypm-core
+}
+
 function ypc {
   cd ~/Development/yp
 }
