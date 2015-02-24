@@ -29,6 +29,10 @@ _include ${DOTFILES}/functionrc
 _include ${DOTFILES}/prompt
 _include ${DOTFILES}/completion/general.sh
 
+# For hosts using boot2docker
+# - needs to be manually
+_include ${HOME}/.boot2dockerrc
+
 ###############################################################
 # History
 ###############################################################

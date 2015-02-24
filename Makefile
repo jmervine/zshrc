@@ -60,3 +60,6 @@ else
 $(HOME)/.tmux.conf:
 	ln -s $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 endif
+
+docker:
+	docker build -t jmervine/zshrc:latest .

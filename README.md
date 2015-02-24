@@ -1,5 +1,9 @@
 # zshrc
 
+> NOTE:
+>
+> Includes my full [vim configuration](https://github.com/jmervine/vimrc).
+
 ```
 # Install
 ##
@@ -13,4 +17,10 @@ cd ~/.dotfiles
 make uninstall
 ```
 
+## Docker
+
+```
+docker run --rm -it --net=host \
+    -v /path/to/workspace:/root/workspace jmervine/zshrc:latest
+```
 
