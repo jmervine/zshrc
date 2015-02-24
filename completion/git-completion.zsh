@@ -1,5 +1,5 @@
 #compdef git gitk
-
+echo "LOADING GIT COMPLETION"
 # zsh completion wrapper for git
 #
 # Copyright (c) 2012-2013 Felipe Contreras <felipe.contreras@gmail.com>

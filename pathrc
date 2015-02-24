@@ -34,6 +34,6 @@ export GOBIN=$HOME/.bin
 # RBENV
 #############################################################
 export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+#eval "$(rbenv init -)"
 
 # vim: ft=sh:

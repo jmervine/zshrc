@@ -14,5 +14,6 @@ zstyle ':completion:*' hosts off
 autoload -U zmv
 
 # git
-this_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-zstyle ':completion:*:*:git:*' script ${this_dir}/.git-completion.zsh
+if test -f ~/.dotfiles/.git-completion.zsh; then
+  zstyle ':completion:*:*:git:*' script ~/.dotfiles/.git-completion.zsh
+fi

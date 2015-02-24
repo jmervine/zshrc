@@ -12,8 +12,10 @@ test:
 	test -L $(CWD)/test/.gitignore
 	test -L $(CWD)/test/.xmodmap
 	test -L $(CWD)/test/.tmux.conf
-	#  CLEANUP
-	#rm -rvf test
+
+clean:
+	make uninstall HOME=$(CWD)/test
+	rm -r test
 
 install:
 	make $(HOME)/.dotfiles
@@ -23,24 +25,32 @@ install:
 	make $(HOME)/.xmodmap
 	make $(HOME)/.tmux.conf
 
+uninstall:
+	rm -vf $(HOME)/.dotfiles
+	rm -vf $(HOME)/.zshrc
+	rm -vf $(HOME)/.gitconfig
+	rm -vf $(HOME)/.gitignore
+	rm -vf $(HOME)/.xmodmap
+	rm -vf $(HOME)/.tmux.conf
+
 $(HOME)/.dotfiles:
-	ln -vs $(CWD) $(HOME)/.dotfiles
+	ln -s $(CWD) $(HOME)/.dotfiles
 
 $(HOME)/.zshrc:
-	ln -vs $(CWD)/_zshrc $(HOME)/.zshrc
+	ln -s $(CWD)/_zshrc $(HOME)/.zshrc
 
 $(HOME)/.gitconfig:
-	ln -vs $(CWD)/_gitconfig $(HOME)/.gitconfig
+	ln -s $(CWD)/_gitconfig $(HOME)/.gitconfig
 
 $(HOME)/.gitignore:
-	ln -vs $(CWD)/_gitignore $(HOME)/.gitignore
+	ln -s $(CWD)/_gitignore $(HOME)/.gitignore
 
 $(HOME)/.xmodmap:
-	ln -vs $(CWD)/_xmodmap $(HOME)/.xmodmap
+	ln -s $(CWD)/_xmodmap $(HOME)/.xmodmap
 
 ifeq "$(shell uname)" "Darwin"
 $(HOME)/.tmux.conf: reattach-to-user-namespace
-	ln -vs $(CWD)/_tmux.conf $(HOME)/.tmux.conf
+	ln -s $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 
 reattach-to-user-namespace:
 	@# be slick
@@ -48,5 +58,5 @@ reattach-to-user-namespace:
 		if which port; then sudo port install tmux-pasteboard; else brew install reattach-to-user-namespace; fi
 else
 $(HOME)/.tmux.conf:
-	ln -vs $(CWD)/_tmux.conf $(HOME)/.tmux.conf
+	ln -s $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 endif

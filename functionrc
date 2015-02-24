@@ -125,7 +125,7 @@ function npm_exec() {
 
 function find {
   if [ `uname -s` = "Darwin" ]; then
-    $browser="open"
+    browser="open"
   fi
   test "$browser" || browser=`which chromium-browser`
   test "$browser" || browser=`which google-chrome`
