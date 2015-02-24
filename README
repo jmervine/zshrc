@@ -1,3 +1,0 @@
-install using:
-
-$ bash < <(curl -s https://raw.githubusercontent.com/jmervine/dotfiles/master/install.sh)
