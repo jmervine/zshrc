@@ -1,56 +1,3 @@
-[[ -e ~/.localrc ]] && . ~/.localrc # run first
-
-export EDITOR=vim
-bindkey -v
-bindkey '^R' history-incremental-search-backward
-
-###############################################################
-# Completion
-###############################################################
-CASE_SENSITIVE="true"
-COMPLETION_WAITING_DOTS="true"
-setopt bash_autolist
-autoload -U compinit && compinit
-zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tty,cmd'
-
-local knownhosts
-knownhosts=( ${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*} )
-zstyle ':completion:*:(ssh|scp|sftp):*' hosts $knownhosts
-#zstyle ':completion:*' hosts off
-autoload -U zmv
-
-###############################################################
-# Externals
-###############################################################
-#
-. ~/.pathrc # paths
-. ~/.aliasrc # aliases
-. ~/.functionrc # functions
-
-###############################################################
-# History
-###############################################################
-setopt inc_append_history
-setopt share_history
-HISTSIZE=10000
-SAVEHIST=10000
-HISTFILE=~/.zsh_history
-unsetopt correct_all
-
-###############################################################
-# Directory Navigation
-###############################################################
-# remember directories you've navigated through
-# dirs -v to list
-# cd +1 to jump to dir 1 from top
-# cd -3 to jump to dir 3 from bottom
-setopt AUTO_PUSHD
-
-###############################################################
-# Overwrite globals
-###############################################################
-alias src=". ~/.zshrc"
-
 ###############################################################
 # Prompt
 ###############################################################
@@ -146,5 +93,4 @@ function precmd() {
 
 autoload -U colors && colors
 
-PATH=$HOME/.bin:$HOME/scripts:$HOME/bin:$PATH
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+# vim: ft=sh:

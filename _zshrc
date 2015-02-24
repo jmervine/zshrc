@@ -1,0 +1,51 @@
+###############################################################
+# 'localrc'
+###############################################################
+#
+# - to add local customizations, create '~/.localrc' and
+#   add changes to it
+[[ -e ~/.localrc ]] && . ~/.localrc # run first
+
+###############################################################
+# Inital setup.
+###############################################################
+#
+export EDITOR=vim
+bindkey -v
+bindkey '^R' history-incremental-search-backward
+
+###############################################################
+# Externals
+###############################################################
+#
+test "$DOTFILES" || DOTFILES=~/.dotfiles
+function _include() {
+  [[ -e $1 ]] && . $1
+}
+
+_include ${DOTFILES}/pathrc
+_include ${DOTFILES}/aliasrc
+_include ${DOTFILES}/functionrc
+_include ${DOTFILES}/prompt
+_include ${DOTFILES}/completion/general.sh
+
+###############################################################
+# History
+###############################################################
+setopt inc_append_history
+setopt share_history
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+unsetopt correct_all
+
+###############################################################
+# Directory Navigation
+###############################################################
+# remember directories you've navigated through
+# dirs -v to list
+# cd +1 to jump to dir 1 from top
+# cd -3 to jump to dir 3 from bottom
+setopt AUTO_PUSHD
+
+# vim: ft=sh:

@@ -2,15 +2,14 @@
 # Aliases
 #############################################################
 
-
-# vi aliases
-alias vi="/usr/bin/vim -X"
-alias vidiff="/usr/bin/vimdiff -X"
-#alias gvim="gnome-terminal -e /usr/bin/vim -X"
-#alias gvimdiff="gnome-terminal -e /usr/bin/vim -X"
+alias src=". ~/.zshrc"
 
 # print time
 alias t="date +%H:%M"
+
+if test "$(which mvim)"; then
+  alias gvim="$(which mvim)"
+fi
 
 # print date
 alias d="date +%b-%d-%Y"

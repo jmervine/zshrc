@@ -9,6 +9,17 @@
 #
 #############################################################
 
+#
+# GLOBALS
+###
+
+VIM=$(which vim)
+GVIM=$(which gvim)
+test "$GVIM" || \
+  GVIM=$(which mvim)
+
+###
+
 
 function tm() {
         tmux attach-session || (cd ~/Development/; tmux )
@@ -63,29 +74,9 @@ function ff() {
         find . -type f -name "*$1*"
 }
 
-function ffo() {
-        find . -type f -name "*$1*" | xargs vim
-}
-
-function ffg() {
-        find . -type f -name "*$1*" | xargs gvim -f
-}
-
 function fd() {
-        echo "Running: find . -type f -name \"*$1*\""
         find . -type d -name "*$1*"
-        echo " "
-        echo "Done."
 }
-
-function fdo() {
-        find . -type d -name "*$1*" | xargs vim
-}
-
-function fdg() {
-        find . -type d -name "*$1*" | xargs gvim
-}
-
 
 #############################################################
 # SSH Agent Setup
@@ -105,7 +96,6 @@ function start_agent {
 # Source SSH settings, if applicable
 if [ -f "${SSH_ENV}" ]; then
      . "${SSH_ENV}" > /dev/null
-     #ps ${SSH_AGENT_PID} doesn't work under cywgin
      ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
          start_agent;
      }
@@ -113,95 +103,24 @@ else
      start_agent;
 fi
 
-
-function upload_yp_gem() {
-        test -e $1 || exit 1
-        echo "curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )"
-        curl -T $1 http://mogwai:7700/gems.atti/gems/$( echo $1 | awk -F'/' '{ print $(NF-0) }' )
+function sgvim() {
+  $GVIM -f "sudo:$@"
 }
 
 function svim() {
-  /usr/bin/gvim -f "sudo:$@"
-}
-
-function svi() {
-  /usr/local/bin/vim -f "sudo:$@"
+  $VIM -f "sudo:$@"
 }
 
 function gvim() {
-  /usr/bin/gvim -X "$@" &
-}
-
-function vim() {
-  gnome-terminal -t "vim" -e "/usr/bin/vim -X -f \"$@\"" &
+  $GVIM -X "$@" &
 }
 
 function gvimdiff() {
-  /usr/bin/gvimdiff -X "$@" &
-}
-
-function vimdiff() {
-  gnome-terminal -t "vimdiff" -e "/usr/bin/vimdiff -X -f \"$@\"" &
-}
-
-function do_pry() {
-  PRYCMD="$(which pry)"
-  IRBCMD="$(which irb)"
-  if test -e "$(which pry)"
-  then
-    echo "Starting $PRYCMD"
-    $PRYCMD
-  else
-    echo "Starting $IRBCMD"
-    $IRBCMD
-  fi
-}
-
-function irb() {
-  do_pry
-}
-
-function pry() {
-  do_pry
-}
-
-function _irb() {
-  command irb
+  ${GVIM}diff -X "$@" &
 }
 
 function npm_exec() {
   PATH=$(npm bin):$PATH $@
-}
-
-function ypu {
-  cd ~/Development/yp
-}
-
-function ypm {
-  cd ~/Development/ypm-core
-}
-
-function ypc {
-  cd ~/Development/yp
-}
-
-function cms {
-  cd ~/Development/personal/mervine.net/content/pages/
-  rvm use ruby-1.9.3-p392
-}
-
-function tmp {
-  cd ~/Development/tmp
-}
-
-function mail {
-  nohup /usr/bin/google-chrome \
-    --user-agent="Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0" \
-    "http://mail.yp.com/" &> /dev/null &
-}
-
-function begin {
-  mail; pidgin 2>&1 &; tm
 }
 
 function find {
@@ -220,3 +139,84 @@ function find {
     /usr/bin/find $@
   fi
 }
+
+#############################################################
+# Function -- PSSH wrapper
+#############################################################
+pssh_exec="$(which pssh)"
+if test "$pssh_exec"; then
+  # wrapper (via ssh-agent)
+  function pssh() {
+    cmd="$@"
+    if ! test -f hosts; then
+      echo "pssh: 'hosts' file not found"
+      return 1
+    fi
+    $pssh_exec --par=10 --hosts=./hosts -l $USER \
+      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+  }
+
+  # wrapper w/ password request
+  function ppssh() {
+    cmd="$@"
+    if ! test -f hosts; then
+      echo "pssh: 'hosts' file not found"
+      return 1
+    fi
+    $pssh_exec --par=10 --hosts=./hosts -l $USER -A \
+      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+  }
+
+  # pass thru
+  function pssh!() {
+    $pssh_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
+  }
+else
+  echo "Install pssh with 'pip install pssh'."
+fi
+
+pscp_exec="$(which pscp)"
+if test "$pscp_exec"; then
+  # wrapper (via ssh-agent)
+  function pscp() {
+    cmd="$@"
+    if ! test -f hosts; then
+      echo "pscp: 'hosts' file not found"
+      return 1
+    fi
+    $pscp_exec --par=10 --hosts=./hosts -l $USER \
+      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+  }
+
+  # wrapper w/ password request
+  function ppscp() {
+    cmd="$@"
+    if ! test -f hosts; then
+      echo "pscp: 'hosts' file not found"
+      return 1
+    fi
+    $pscp_exec --par=10 --hosts=./hosts -l $USER -A \
+      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+  }
+
+  # pass thru
+  function pscp!() {
+    $pscp_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
+  }
+fi
+
+#############################################################
+# Function -- Docker Flatten
+#############################################################
+function docker_flatten() {
+    image_name=$(echo $1 | awk -F':' '{print $1}')
+    image_tag=$(echo $1  | awk -F':' '{print $2}')
+    test "$image_name" || return 1
+    test "$image_tag"  || image_tag="latest"
+
+    docker run --name $image_name $image_name:$image_tag && \
+      (docker export $image_name | docker import - $image_name:${image_tag}_flat) && \
+        docker rm $image_name
+}
+
+# vim: ft=sh:

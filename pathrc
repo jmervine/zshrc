@@ -1,7 +1,9 @@
 #############################################################
 # Pathing
 #############################################################
-export PATH=/usr/local/eclipse:/usr/local/java/jre1.7.0_21/bin:/opt/oracle/instantclient_11_1:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$HOME/Development/traffic_light_py_gui/bin:$HOME/bin:$HOME/sbin/homebrew/bin:$HOME/sbin:$PATH
+
+# possible local "bin" dirs
+export PATH=$HOME/.bin:$HOME/Scripts:$HOME/scripts:$HOME/bin:$PATH
 
 #############################################################
 # MacPorts configuration
@@ -18,18 +20,8 @@ export PYTHONPATH=/home/jmervine/Scripts/python/lib:$PYTHONPATH
 #############################################################
 # RVM Environment
 #############################################################
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
-
-
-#############################################################
-# LD_LIBRARY_PATH
-#############################################################
-export LD_LIBRARY_PATH=/opt/oracle/instantclient_11_1
-
-#############################################################
-# JAVA_HOME
-#############################################################
-export JAVA_HOME=/usr/local/java/jre1.7.0_21/
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && \
+  . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
 #############################################################
 # GOPATH
@@ -43,6 +35,5 @@ export GOBIN=$HOME/.bin
 #############################################################
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
-
 
 # vim: ft=sh:
