@@ -1,5 +1,22 @@
 CWD=$(shell pwd)
 
+install:
+	make $(HOME)/.dotfiles
+	make $(HOME)/.zshrc
+	make $(HOME)/.bashrc
+	make $(HOME)/.gitconfig
+	make $(HOME)/.gitignore
+	make $(HOME)/.xmodmap
+	make $(HOME)/.tmux.conf
+
+uninstall:
+	rm -vf $(HOME)/.dotfiles
+	rm -vf $(HOME)/.zshrc
+	rm -vf $(HOME)/.gitconfig
+	rm -vf $(HOME)/.gitignore
+	rm -vf $(HOME)/.xmodmap
+	rm -vf $(HOME)/.tmux.conf
+
 # Test install target below.
 test:
 	#  RUN
@@ -17,27 +34,14 @@ clean:
 	make uninstall HOME=$(CWD)/test
 	rm -r test
 
-install:
-	make $(HOME)/.dotfiles
-	make $(HOME)/.zshrc
-	make $(HOME)/.gitconfig
-	make $(HOME)/.gitignore
-	make $(HOME)/.xmodmap
-	make $(HOME)/.tmux.conf
-
-uninstall:
-	rm -vf $(HOME)/.dotfiles
-	rm -vf $(HOME)/.zshrc
-	rm -vf $(HOME)/.gitconfig
-	rm -vf $(HOME)/.gitignore
-	rm -vf $(HOME)/.xmodmap
-	rm -vf $(HOME)/.tmux.conf
-
 $(HOME)/.dotfiles:
 	ln -s $(CWD) $(HOME)/.dotfiles
 
 $(HOME)/.zshrc:
 	ln -s $(CWD)/_zshrc $(HOME)/.zshrc
+
+$(HOME)/.bashrc:
+	ln -s $(CWD)/_bashrc $(HOME)/.bashrc
 
 $(HOME)/.gitconfig:
 	ln -s $(CWD)/_gitconfig $(HOME)/.gitconfig

@@ -20,7 +20,6 @@ test "$GVIM" || \
 
 ###
 
-
 function tm() {
         tmux attach-session || (cd ~/Development/; tmux )
 }
@@ -123,100 +122,208 @@ function npm_exec() {
   PATH=$(npm bin):$PATH $@
 }
 
+#############################################################
+# Function -- find wrapper
+#############################################################
 function find {
-  if [ `uname -s` = "Darwin" ]; then
-    browser="open"
-  fi
-  test "$browser" || browser=`which chromium-browser`
-  test "$browser" || browser=`which google-chrome`
-  test "$browser" || browser=`which firefox`
-  query="`echo "$@" | sed -e 's:^[a-z\/\~\.]* ::' -e 's/-type [mg]//' -e 's/-name//'`"
-  if [[ $@ =~ "-type m" ]]; then
-    $browser "http://maps.google.com/?q=$query" 2>&1 > /dev/null &
-  elif [[ $@ =~ "-type g" ]]; then
-    $browser "http://www.google.com/search?q=$query" 2>&1 > /dev/null &
-  else
-    /usr/bin/find $@
-  fi
+    if [ `uname -s` = "Darwin" ]; then
+        browser="open"
+    fi
+    test "$browser" || browser=`which chromium-browser`
+    test "$browser" || browser=`which google-chrome`
+    test "$browser" || browser=`which firefox`
+    query="`echo "$@" | sed -e 's:^[a-z\/\~\.]* ::' -e 's/-type [mg]//' -e 's/-name//'`"
+    if [[ $@ =~ "-type m" ]]; then
+        $browser "http://maps.google.com/?q=$query" 2>&1 > /dev/null &
+    elif [[ $@ =~ "-type g" ]]; then
+        $browser "http://www.google.com/search?q=$query" 2>&1 > /dev/null &
+    else
+        /usr/bin/find $@
+    fi
+
+    echo "+ initialized find function"
+    echo "+ -type m :: google maps"
+    echo "+ -type g :: google search"
 }
+
+#############################################################
+# Function -- myip
+#############################################################
+function myip {
+    # When IP isn't found, use hostname.
+    # This will pretty much always break though.
+    if [[ "$(uname)" = "Darwin" ]]; then
+        for en in en2 en1 en0; do
+            ipaddr=$(ifconfig $en | grep "inet " | awk '{ print $2 }')
+            if test "$ipaddr"; then
+              echo $ipaddr
+              return 0
+            fi
+        done
+    else
+        for eth in eth2 eth1 eth0; do
+            ipaddr=$(ifconfig $eth | grep "inet " | awk '{ print $2 }')
+            if test "$ipaddr"; then
+                echo $ipaddr
+                return 0
+            fi
+        done
+    fi
+    echo "$(hostname)"
+}
+echo "+ initialized myip function"
 
 #############################################################
 # Function -- PSSH wrapper
 #############################################################
 pssh_exec="$(which pssh)"
 if test "$pssh_exec"; then
-  # wrapper (via ssh-agent)
-  function pssh() {
-    cmd="$@"
-    if ! test -f hosts; then
-      echo "pssh: 'hosts' file not found"
-      return 1
-    fi
-    $pssh_exec --par=10 --hosts=./hosts -l $USER \
-      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-  }
+    # wrapper (via ssh-agent)
+    function pssh() {
+      cmd="$@"
+      if ! test -f hosts; then
+        echo "pssh: 'hosts' file not found"
+        return 1
+      fi
+      $pssh_exec --par=10 --hosts=./hosts -l $USER \
+        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+    }
 
-  # wrapper w/ password request
-  function ppssh() {
-    cmd="$@"
-    if ! test -f hosts; then
-      echo "pssh: 'hosts' file not found"
-      return 1
-    fi
-    $pssh_exec --par=10 --hosts=./hosts -l $USER -A \
-      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-  }
+    # wrapper w/ password request
+    function ppssh() {
+      cmd="$@"
+      if ! test -f hosts; then
+        echo "pssh: 'hosts' file not found"
+        return 1
+      fi
+      $pssh_exec --par=10 --hosts=./hosts -l $USER -A \
+        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+    }
 
-  # pass thru
-  function pssh!() {
-    $pssh_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
-  }
+    # pass thru
+    function pssh!() {
+      $pssh_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
+    }
+
+    echo "+ initialized pssh functions"
+    echo "+ - pssh  :: pssh with './hosts'"
+    echo "+ - ppssh :: pssh with './hosts' and password request"
+    echo "+ - pssh! :: pssh pass through"
 else
-  echo "Install pssh with 'pip install pssh'."
+    echo "+ install pssh with 'pip install pssh'"
 fi
 
 pscp_exec="$(which pscp)"
 if test "$pscp_exec"; then
-  # wrapper (via ssh-agent)
-  function pscp() {
-    cmd="$@"
-    if ! test -f hosts; then
-      echo "pscp: 'hosts' file not found"
-      return 1
-    fi
-    $pscp_exec --par=10 --hosts=./hosts -l $USER \
-      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-  }
+    # wrapper (via ssh-agent)
+    function pscp() {
+      cmd="$@"
+      if ! test -f hosts; then
+        echo "pscp: 'hosts' file not found"
+        return 1
+      fi
+      $pscp_exec --par=10 --hosts=./hosts -l $USER \
+        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+    }
 
-  # wrapper w/ password request
-  function ppscp() {
-    cmd="$@"
-    if ! test -f hosts; then
-      echo "pscp: 'hosts' file not found"
-      return 1
-    fi
-    $pscp_exec --par=10 --hosts=./hosts -l $USER -A \
-      -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-  }
+    # wrapper w/ password request
+    function ppscp() {
+      cmd="$@"
+      if ! test -f hosts; then
+        echo "pscp: 'hosts' file not found"
+        return 1
+      fi
+      $pscp_exec --par=10 --hosts=./hosts -l $USER -A \
+        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+    }
 
-  # pass thru
-  function pscp!() {
-    $pscp_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
-  }
+    # pass thru
+    function pscp!() {
+      $pscp_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
+    }
+
+    echo "+ initialized pscp functions"
+    echo "+ - pscp  :: pscp with './hosts'"
+    echo "+ - ppscp :: pscp with './hosts' and password request"
+    echo "+ - pscp! :: pscp pass through"
 fi
 
 #############################################################
 # Function -- Docker Flatten
 #############################################################
-function docker_flatten() {
-    image_name=$(echo $1 | awk -F':' '{print $1}')
-    image_tag=$(echo $1  | awk -F':' '{print $2}')
-    test "$image_name" || return 1
-    test "$image_tag"  || image_tag="latest"
+if test "$(which docker)"; then
+    function docker_flatten() {
+        echo "got: $@"
+        image_name=$(echo $1 | awk -F':' '{print $1}')
+        image_tag=$(echo $1  | awk -F':' '{print $2}')
+        test "$image_name" || return 1
+        test "$image_tag"  || image_tag="latest"
 
-    docker run --name $image_name $image_name:$image_tag && \
-      (docker export $image_name | docker import - $image_name:${image_tag}_flat) && \
-        docker rm $image_name
-}
+        docker run --name $image_name $image_name:$image_tag && \
+          (docker export $image_name | docker import - $image_name:${image_tag}_flat) && \
+            docker rm $image_name
+
+        echo "+ initialized docker_flatten function"
+        echo "+   usage: docker_flatten <image>[:<tag>]"
+    }
+fi
+
+#############################################################
+# Function -- Boot2Docker
+#############################################################
+if test "$(which boot2docker)"; then
+
+    function docker_reset {
+        echo "+ clearing docker variables"
+        unset DOCKER_HOST
+        unset DOCKER_CERT_PATH
+        unset DOCKER_TLS_VERIFY
+        echo "" > ~/.boot2dockerrc
+    }
+
+    function docker_up {
+        docker_reset
+        echo "+ starting boot2docker"
+        boot2docker up | grep "export DOCKER_" | tee ~/.boot2dockerrc
+        b2dSTATUS=$?
+        . ~/.boot2dockerrc
+        return $b2dSTATUS
+    }
+
+    function docker_down {
+        echo "+ stopping boot2docker"
+        boot2docker down
+        return 0
+    }
+
+    function docker_reup {
+        docker_down
+        docker_up
+        return $?
+    }
+
+    function b2d {
+        if [[ "$@" = "reset" ]]; then
+            docker_reset
+            return 0
+        fi
+
+        if [[ "$@" = "up" ]]; then
+            docker_up
+            return $?
+        fi
+
+        if [[ "$@" = "reup" ]]; then
+            docker_reup
+            return $?
+        fi
+
+        # pass on to docker by default
+        boot2docker $@
+    }
+
+    echo "+ initialized boot2docker functions"
+    echo "+   usage: b2d [up|down|reup|reset]"
+fi
 
 # vim: ft=sh:

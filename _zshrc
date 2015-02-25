@@ -1,10 +1,4 @@
-###############################################################
-# 'localrc'
-###############################################################
-#
-# - to add local customizations, create '~/.localrc' and
-#   add changes to it
-[[ -e ~/.localrc ]] && . ~/.localrc # run first
+echo "New zsh session:"
 
 ###############################################################
 # Inital setup.
@@ -25,9 +19,9 @@ function _include() {
 
 _include ${DOTFILES}/pathrc
 _include ${DOTFILES}/aliasrc
-_include ${DOTFILES}/functionrc
 _include ${DOTFILES}/prompt
 _include ${DOTFILES}/completion/general.sh
+_include ${DOTFILES}/functionrc
 
 # For hosts using boot2docker
 # - needs to be manually
@@ -52,4 +46,10 @@ unsetopt correct_all
 # cd -3 to jump to dir 3 from bottom
 setopt AUTO_PUSHD
 
+###############################################################
+# 'localrc' -- should be last!
+###############################################################
+# - to add local customizations, create '~/.localrc' and
+#   add changes to it
+[[ -e ~/.localrc ]] && . ~/.localrc # run first
 # vim: ft=sh:

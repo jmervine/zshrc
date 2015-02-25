@@ -1,0 +1,35 @@
+if [[ "$(echo $0)" = "bash" ]]; then
+    echo "New bash session:"
+
+    ###############################################################
+    # Inital setup.
+    ###############################################################
+    #
+    export EDITOR=vim
+    PS1="\u@\h \W $ "
+
+    ###############################################################
+    # Externals
+    ###############################################################
+    #
+    test "$DOTFILES" || DOTFILES=~/.dotfiles
+    function _include() {
+      [[ -e $1 ]] && . $1
+    }
+
+    _include ${DOTFILES}/pathrc
+    _include ${DOTFILES}/aliasrc
+    _include ${DOTFILES}/functionrc
+
+    # For hosts using boot2docker
+    # - needs to be manually
+    _include ${HOME}/.boot2dockerrc
+
+    ###############################################################
+    # 'localrc' -- should be last!
+    ###############################################################
+    # - to add local customizations, create '~/.localrc' and
+    #   add changes to it
+    [[ -e ~/.localrc ]] && . ~/.localrc # run first
+fi
+# vim: ft=sh:

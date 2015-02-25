@@ -36,4 +36,10 @@ export GOBIN=$HOME/.bin
 export PATH="$HOME/.rbenv/bin:$PATH"
 #eval "$(rbenv init -)"
 
+#############################################################
+# Scala
+#############################################################
+export SCALAHOME=$HOME/.bin/scala
+export PATH=$SCALAHOME/bin:$PATH
+
 # vim: ft=sh:
