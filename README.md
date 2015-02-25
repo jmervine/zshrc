@@ -1,9 +1,5 @@
 # zshrc
 
-> NOTE:
->
-> Includes my full [vim configuration](https://github.com/jmervine/vimrc).
-
 ```
 # Install
 ##
@@ -18,6 +14,11 @@ make uninstall
 ```
 
 ## Docker
+
+> NOTE:
+>
+> The docker image contains my full [vim configuration](https://github.com/jmervine/vimrc).
+
 
 ```
 docker run --rm -it --net=host \
