@@ -1,4 +1,4 @@
-echo "New zsh session:"
+[[ -z "$TMUX" ]] && echo "New zsh session:"
 
 ###############################################################
 # Inital setup.

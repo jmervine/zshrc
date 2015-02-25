@@ -2,7 +2,12 @@
 # Aliases
 #############################################################
 
-alias src=". ~/.zshrc"
+# reset current zshrc
+alias zshrc="exec zsh -l"
+alias src="exec zsh -l"
+
+alias bashrc="bash -l"
+alias chbash="exec bash -l"
 
 # print time
 alias t="date +%H:%M"
@@ -16,9 +21,6 @@ alias d="date +%b-%d-%Y"
 
 # print date and time
 alias dt="echo $(date +%b-%d-%Y) @ $(date +%H:%M)"
-
-# tmux reattach shortcut
-alias tmuxr="tmux attach-session"
 
 # bundle exec shortcut
 alias be="bundle exec"
@@ -34,9 +36,6 @@ ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G
 
 # mvim => gvim
 [[ -e ~/bin/mvim ]] && alias gvim="~/bin/mvim"
-
-# source profile shortcut
-alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
 
 # shortcut to quicly remove vim temp files
 alias rmswp='find . -type f -name *.swp | xargs rm -v'

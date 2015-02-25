@@ -19,6 +19,10 @@ function which {
     fi
 }
 
+function puts {
+    [[ -z "$TMUX" ]] && echo "$@"
+}
+
 #
 # GLOBALS
 ###
@@ -31,7 +35,17 @@ test "$GVIM" || \
 ###
 
 function tm() {
-        tmux attach-session || (cd ~/Development/; tmux )
+    if [[ "$1" = "mine" || "$1" = "takeover" ]]; then
+        tmux detach -a
+        return $?
+    fi
+
+    if [[ "$1" = "killall" || "$1" = "kill" ]]; then
+        tmux ls | grep : | cut -d. -f1 | awk '{print substr($1, 0, length($1)-1)}' | xargs kill
+        return $?
+    fi
+
+    tmux attach-session || (cd ~/; tmux )
 }
 
 #############################################################
@@ -139,9 +153,9 @@ function find {
         /usr/bin/find $@
     fi
 }
-echo "+ initialized find function"
-echo "+ -type m :: google maps"
-echo "+ -type g :: google search"
+puts "+ initialized find function"
+puts "+ -type m :: google maps"
+puts "+ -type g :: google search"
 
 #############################################################
 # Function -- myip
@@ -168,7 +182,7 @@ function myip {
     fi
     echo "$(hostname)"
 }
-echo "+ initialized myip function"
+puts "+ initialized myip function"
 
 #############################################################
 # Function -- PSSH wrapper
@@ -202,10 +216,10 @@ if test "$(which pssh 2> /dev/null)"; then
       $pssh_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
     }
 
-    echo "+ initialized pssh functions"
-    echo "+ - pssh  :: pssh with './hosts'"
-    echo "+ - ppssh :: pssh with './hosts' and password request"
-    echo "+ - pssh! :: pssh pass through"
+    puts "+ initialized pssh functions"
+    puts "+ - pssh  :: pssh with './hosts'"
+    puts "+ - ppssh :: pssh with './hosts' and password request"
+    puts "+ - pssh! :: pssh pass through"
 else
     echo "X install pssh with 'pip install pssh'"
 fi
@@ -239,10 +253,10 @@ if test "$(which pscp 2> /dev/null)"; then
       $pscp_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
     }
 
-    echo "+ initialized pscp functions"
-    echo "+ - pscp  :: pscp with './hosts'"
-    echo "+ - ppscp :: pscp with './hosts' and password request"
-    echo "+ - pscp! :: pscp pass through"
+    puts "+ initialized pscp functions"
+    puts "+ - pscp  :: pscp with './hosts'"
+    puts "+ - ppscp :: pscp with './hosts' and password request"
+    puts "+ - pscp! :: pscp pass through"
 fi
 
 #############################################################
@@ -260,8 +274,8 @@ if test "$(which docker 2> /dev/null)"; then
           (docker export $image_name | docker import - $image_name:${image_tag}_flat) && \
             docker rm $image_name
 
-        echo "+ initialized docker_flatten function"
-        echo "+   usage: docker_flatten <image>[:<tag>]"
+        puts "+ initialized docker_flatten function"
+        puts "+   usage: docker_flatten <image>[:<tag>]"
     }
 fi
 
@@ -270,7 +284,7 @@ fi
 #############################################################
 if test "$(which boot2docker 2> /dev/null)"; then
     function docker_reset {
-        echo "+ clearing docker variables"
+        puts "+ clearing docker variables"
         unset DOCKER_HOST
         unset DOCKER_CERT_PATH
         unset DOCKER_TLS_VERIFY
@@ -279,7 +293,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
 
     function docker_up {
         docker_reset
-        echo "+ starting boot2docker"
+        puts "+ starting boot2docker"
         boot2docker up | grep "export DOCKER_" | tee ~/.boot2dockerrc
         b2dSTATUS=$?
         . ~/.boot2dockerrc
@@ -287,7 +301,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
     }
 
     function docker_down {
-        echo "+ stopping boot2docker"
+        puts "+ stopping boot2docker"
         boot2docker down
         return 0
     }
@@ -318,8 +332,8 @@ if test "$(which boot2docker 2> /dev/null)"; then
         boot2docker $@
     }
 
-    echo "+ initialized boot2docker functions"
-    echo "+   usage: b2d [up|down|reup|reset]"
+    puts "+ initialized boot2docker functions"
+    puts "+   usage: b2d [up|down|reup|reset]"
 fi
 
 # vim: ft=sh:
