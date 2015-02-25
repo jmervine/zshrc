@@ -7,7 +7,7 @@ alias src=". ~/.zshrc"
 # print time
 alias t="date +%H:%M"
 
-if test "$(which mvim)"; then
+if test "$(which mvim 2> /dev/null)"; then
   alias gvim="$(which mvim)"
 fi
 
@@ -41,7 +41,7 @@ alias src="source ~/.profile || source ~/.bash_profile || source ~/.bashrc"
 # shortcut to quicly remove vim temp files
 alias rmswp='find . -type f -name *.swp | xargs rm -v'
 
-if test "$(which ack-grep)"; then
+if test "$(which ack-grep 2> /dev/null)"; then
   alias ack="ack-grep"
 fi
 

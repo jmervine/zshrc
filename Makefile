@@ -10,12 +10,12 @@ install:
 	make $(HOME)/.tmux.conf
 
 uninstall:
-	rm -vf $(HOME)/.dotfiles
-	rm -vf $(HOME)/.zshrc
-	rm -vf $(HOME)/.gitconfig
-	rm -vf $(HOME)/.gitignore
-	rm -vf $(HOME)/.xmodmap
-	rm -vf $(HOME)/.tmux.conf
+	-test -L $(HOME)/.dotfiles  && rm -vf $(HOME)/.dotfiles
+	-test -L $(HOME)/.zshrc     && rm -vf $(HOME)/.zshrc
+	-test -L $(HOME)/.gitconfig && rm -vf $(HOME)/.gitconfig
+	-test -L $(HOME)/.gitignore && rm -vf $(HOME)/.gitignore
+	-test -L $(HOME)/.xmodmap   && rm -vf $(HOME)/.xmodmap
+	-test -L $(HOME)/.tmux.conf && rm -vf $(HOME)/.tmux.conf
 
 # Test install target below.
 test:

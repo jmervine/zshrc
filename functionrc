@@ -10,13 +10,23 @@
 #############################################################
 
 #
+# DEPS
+###
+function which {
+    if ! /usr/bin/which $@
+    then
+        type $1 | head -1
+    fi
+}
+
+#
 # GLOBALS
 ###
 
-VIM=$(which vim)
-GVIM=$(which gvim)
+VIM=$(/usr/bin/which vim 2> /dev/null)
+GVIM=$(/usr/bin/which gvim 2> /dev/null)
 test "$GVIM" || \
-  GVIM=$(which mvim)
+  GVIM=$(/usr/bin/which mvim 2> /dev/null)
 
 ###
 
@@ -43,18 +53,6 @@ function encrypt {
         openssl enc -e -aes-256-cbc -salt -in "$FILE" -out "$FILE.enc"
         FILE=""
 }
-
-#############################################################
-# Function -- which to handle functions and aliases
-#############################################################
-#
-function which {
-    if ! /usr/bin/which $1
-    then
-        type $1 | head -1
-    fi
-}
-
 
 #############################################################
 # Function - quickly add strings to root .gitignore
@@ -129,9 +127,9 @@ function find {
     if [ `uname -s` = "Darwin" ]; then
         browser="open"
     fi
-    test "$browser" || browser=`which chromium-browser`
-    test "$browser" || browser=`which google-chrome`
-    test "$browser" || browser=`which firefox`
+    test "$browser" || browser=`which chromium-browser 2> /dev/null`
+    test "$browser" || browser=`which google-chrome 2> /dev/null`
+    test "$browser" || browser=`which firefox 2> /dev/null`
     query="`echo "$@" | sed -e 's:^[a-z\/\~\.]* ::' -e 's/-type [mg]//' -e 's/-name//'`"
     if [[ $@ =~ "-type m" ]]; then
         $browser "http://maps.google.com/?q=$query" 2>&1 > /dev/null &
@@ -140,11 +138,10 @@ function find {
     else
         /usr/bin/find $@
     fi
-
-    echo "+ initialized find function"
-    echo "+ -type m :: google maps"
-    echo "+ -type g :: google search"
 }
+echo "+ initialized find function"
+echo "+ -type m :: google maps"
+echo "+ -type g :: google search"
 
 #############################################################
 # Function -- myip
@@ -176,8 +173,8 @@ echo "+ initialized myip function"
 #############################################################
 # Function -- PSSH wrapper
 #############################################################
-pssh_exec="$(which pssh)"
-if test "$pssh_exec"; then
+if test "$(which pssh 2> /dev/null)"; then
+    pssh_exec=$(/usr/bin/which pssh)
     # wrapper (via ssh-agent)
     function pssh() {
       cmd="$@"
@@ -210,11 +207,11 @@ if test "$pssh_exec"; then
     echo "+ - ppssh :: pssh with './hosts' and password request"
     echo "+ - pssh! :: pssh pass through"
 else
-    echo "+ install pssh with 'pip install pssh'"
+    echo "X install pssh with 'pip install pssh'"
 fi
 
-pscp_exec="$(which pscp)"
-if test "$pscp_exec"; then
+if test "$(which pscp 2> /dev/null)"; then
+    pscp_exec=$(/usr/bin/which  pscp)
     # wrapper (via ssh-agent)
     function pscp() {
       cmd="$@"
@@ -251,7 +248,7 @@ fi
 #############################################################
 # Function -- Docker Flatten
 #############################################################
-if test "$(which docker)"; then
+if test "$(which docker 2> /dev/null)"; then
     function docker_flatten() {
         echo "got: $@"
         image_name=$(echo $1 | awk -F':' '{print $1}')
@@ -271,8 +268,7 @@ fi
 #############################################################
 # Function -- Boot2Docker
 #############################################################
-if test "$(which boot2docker)"; then
-
+if test "$(which boot2docker 2> /dev/null)"; then
     function docker_reset {
         echo "+ clearing docker variables"
         unset DOCKER_HOST
