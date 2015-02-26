@@ -336,4 +336,8 @@ if test "$(which boot2docker 2> /dev/null)"; then
     puts "+   usage: b2d [up|down|reup|reset]"
 fi
 
+# because some systems need this in /etc/bashrc
+function shopt {
+  bash -lc "shopt $@"
+}
 # vim: ft=sh:
