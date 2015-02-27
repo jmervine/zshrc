@@ -200,6 +200,16 @@ if test "$(which pssh 2> /dev/null)"; then
         -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
     }
 
+    function psshi() {
+      cmd="$@"
+      if ! test -f hosts; then
+        echo "pssh: 'hosts' file not found"
+        return 1
+      fi
+      $pssh_exec -i --par=10 --hosts=./hosts -l $USER \
+        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
+    }
+
     # wrapper w/ password request
     function ppssh() {
       cmd="$@"
