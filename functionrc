@@ -20,7 +20,11 @@ function which {
 }
 
 function puts {
-    [[ -z "$TMUX" ]] && echo "$@"
+    if [[ $- =~ "i" ]]; then
+        if [[ -z "$TMUX" ]]; then
+            echo "$@"
+        fi
+    fi
 }
 
 #
