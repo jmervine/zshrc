@@ -1,6 +1,9 @@
 if [[ "$(echo $0)" = "bash" ]]; then
-    [[ -z "$TMUX" ]] && echo "New bash session:"
-
+    if [[ $- =~ "i" ]]; then
+        if [[ -z "$TMUX" ]]; then
+          echo "Starting bash session:"
+        fi
+    fi
     ###############################################################
     # Inital setup.
     ###############################################################
