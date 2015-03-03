@@ -14,6 +14,8 @@ alias t="date +%H:%M"
 
 if test "$(which mvim 2> /dev/null)"; then
   alias gvim="$(which mvim)"
+else
+  alias gvim="$(which vim)"
 fi
 
 # print date
@@ -33,9 +35,6 @@ alias bu="bundle update"
 
 # ls colors shortcut
 ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
-
-# mvim => gvim
-[[ -e ~/bin/mvim ]] && alias gvim="~/bin/mvim"
 
 # shortcut to quicly remove vim temp files
 alias rmswp='find . -type f -name *.swp | xargs rm -v'
