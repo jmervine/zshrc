@@ -68,6 +68,9 @@ if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' ( $1 > 4 || ( $1 == 4
 then
   function zle-line-init zle-keymap-select {
       local old_ps1="$(echo $PS1 | sed -e 's@\$ $@@')"
+      if [ "`uname`" = "Darwin" ]; then
+        old_ps1="`echo ${PS1:0:-2}`"
+      fi
       PS1="$old_ps1${${KEYMAP/vicmd/:}/(main|viins)/$} "
       zle reset-prompt
   }
