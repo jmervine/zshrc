@@ -42,4 +42,9 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 export SCALAHOME=$HOME/.bin/scala
 export PATH=$SCALAHOME/bin:$PATH
 
+# Add git when present
+if test -e /usr/local/git; then
+  export PATH=/usr/local/git/bin:$PATH
+fi
+
 # vim: ft=sh:
