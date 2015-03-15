@@ -12,6 +12,7 @@ install:
 uninstall:
 	-test -L $(HOME)/.dotfiles  && rm -vf $(HOME)/.dotfiles
 	-test -L $(HOME)/.zshrc     && rm -vf $(HOME)/.zshrc
+	-test -L $(HOME)/.bashrc    && rm -vf $(HOME)/.bashrc
 	-test -L $(HOME)/.gitconfig && rm -vf $(HOME)/.gitconfig
 	-test -L $(HOME)/.gitignore && rm -vf $(HOME)/.gitignore
 	-test -L $(HOME)/.xmodmap   && rm -vf $(HOME)/.xmodmap
