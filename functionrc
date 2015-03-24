@@ -27,6 +27,20 @@ function puts {
     fi
 }
 
+# Keep zshrc prompt from hanging when ruby isn't installed
+if [[ "$(which ruby)" = "ruby not found" ]]; then
+  function ruby() {
+    echo "n/a"
+  }
+fi
+
+# Keep zshrc prompt from hanging when node isn't installed
+if [[ "$(which node)" = "node not found" ]]; then
+  function node() {
+    echo "n/a"
+  }
+fi
+
 #
 # GLOBALS
 ###
