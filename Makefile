@@ -8,6 +8,7 @@ install:
 	make $(HOME)/.gitignore
 	make $(HOME)/.xmodmap
 	make $(HOME)/.tmux.conf
+	make thefuck
 
 uninstall:
 	-test -L $(HOME)/.dotfiles  && rm -vf $(HOME)/.dotfiles
@@ -65,6 +66,16 @@ else
 $(HOME)/.tmux.conf:
 	ln -s $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 endif
+
+pip:
+	# requires sudo, fails gracefully
+	-which pip || \
+		( which easy_install && sudo easy_install pip )
+
+thefuck: pip
+	# requires sudo, fails gracefully
+	-which thefuck || \
+		( which pip && sudo pip install thefuck )
 
 docker:
 	docker build -t jmervine/zshrc:latest .
