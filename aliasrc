@@ -12,10 +12,12 @@ alias chbash="exec bash -l"
 # print time
 alias t="date +%H:%M"
 
-if test "$(which mvim 2> /dev/null)"; then
-  alias gvim="$(which mvim)"
-else
-  alias gvim="$(which vim)"
+if ! test "$(which gvim)"; then
+  if test "$(which mvim 2> /dev/null)"; then
+    alias gvim="$(which mvim)"
+  else
+    alias gvim="$(which vim)"
+  fi
 fi
 
 # print date
