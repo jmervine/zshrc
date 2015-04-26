@@ -340,6 +340,16 @@ if test "$(which boot2docker 2> /dev/null)"; then
         return $?
     }
 
+    function docker_clean {
+        echo "+ clean containers"
+        #echo "docker ps -a  | grep 'Exited ' | awk '{ print \$NF }' | xargs docker rm"
+        docker ps -a | grep 'Exited ' | awk '{ print $NF }' | xargs docker rm
+
+        echo "+ clean images"
+        #echo "docker images | grep '^<none>' | awk '{ print \$3 }'  | xargs docker rmi"
+        docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
+    }
+
     function b2d {
         if [[ "$@" = "reset" ]]; then
             docker_reset
@@ -353,6 +363,11 @@ if test "$(which boot2docker 2> /dev/null)"; then
 
         if [[ "$@" = "reup" ]]; then
             docker_reup
+            return $?
+        fi
+
+        if [[ "$@" = "clean" ]]; then
+            docker_clean
             return $?
         fi
 

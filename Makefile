@@ -9,6 +9,7 @@ install:
 	make $(HOME)/.xmodmap
 	make $(HOME)/.tmux.conf
 	make $(HOME)/.i3
+	make thefuck
 
 uninstall:
 	-test -L $(HOME)/.dotfiles  && rm -vf $(HOME)/.dotfiles
@@ -70,6 +71,14 @@ else
 $(HOME)/.tmux.conf:
 	ln -vs $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 endif
+
+thefuck:
+	# Installing 'thefuck'.
+	# It requires sudo for pip install.
+	-@which thefuck > /dev/null || \
+		( which brew > /dev/null && brew install thefuck ) || \
+		( which pip > /dev/null && sudo pip install thefuck ) || \
+		echo "Requires either brew or pip to install 'thefuck'"
 
 docker:
 	docker build -t jmervine/zshrc:latest .

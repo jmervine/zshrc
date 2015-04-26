@@ -87,4 +87,7 @@ alias gh="if [ \`uname -s\` = \"Darwin\" ]; then browser=\"open\"; else browser=
 # docker > sudo
 #alias docker="sudo docker"
 
+# thefuck -> fuck
+alias fuck='eval $(thefuck $(fc -ln -1))'
+
 # vim: ft=sh:
