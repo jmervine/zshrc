@@ -1,4 +1,6 @@
 CWD=$(shell pwd)
+MAXCLI=maxcurl maxpurge maxreport maxtail
+DISTRO=$(shell uname | tr '[:upper:]' '[:lower:]')
 
 install:
 	make $(HOME)/.dotfiles
@@ -59,7 +61,17 @@ $(HOME)/.xmodmap:
 $(HOME)/.i3:
 	-test -x "$(shell which i3)" && ln -vs $(CWD)/i3 $(HOME)/.i3
 
+maxcli: $(addprefix $(HOME)/.bin/,$(MAXCLI))
+
+$(addprefix $(HOME)/.bin/,$(MAXCLI)):
+	@#go get github.com/MaxCDN/maxcdn-tools/$(subst $(HOME)/.bin/,,$@)
+	curl -sSL http://get.maxcdn.com/$(subst $(HOME)/.bin/,,$@)/$(DISTRO)/amd64/$(subst $(HOME)/.bin/,,$@) > $@
+	chmod 755 $@
+
 ifeq "$(shell uname)" "Darwin"
+# Mac stuff
+####
+
 $(HOME)/.tmux.conf: reattach-to-user-namespace
 	ln -vs $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 
@@ -67,7 +79,11 @@ reattach-to-user-namespace:
 	@# be slick
 	which reattach-to-user-namespace || \
 		if which port; then sudo port install tmux-pasteboard; else brew install reattach-to-user-namespace; fi
+
 else
+# Linux stuff
+####
+
 $(HOME)/.tmux.conf:
 	ln -vs $(CWD)/_tmux.conf $(HOME)/.tmux.conf
 endif
