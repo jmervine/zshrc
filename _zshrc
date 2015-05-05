@@ -53,3 +53,6 @@ setopt AUTO_PUSHD
 #   add changes to it
 [[ -e ~/.localrc ]] && . ~/.localrc # run first
 # vim: ft=sh:
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"

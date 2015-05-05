@@ -312,7 +312,7 @@ fi
 #############################################################
 if test "$(which boot2docker 2> /dev/null)"; then
     function docker_reset {
-        puts "+ clearing docker variables"
+        echo "+ clearing docker variables"
         unset DOCKER_HOST
         unset DOCKER_CERT_PATH
         unset DOCKER_TLS_VERIFY
@@ -321,7 +321,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
 
     function docker_up {
         docker_reset
-        puts "+ starting boot2docker"
+        echo "+ starting boot2docker"
         boot2docker up | grep "export DOCKER_" | tee ~/.boot2dockerrc
         b2dSTATUS=$?
         . ~/.boot2dockerrc
@@ -329,7 +329,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
     }
 
     function docker_down {
-        puts "+ stopping boot2docker"
+        echo "+ stopping boot2docker"
         boot2docker down
         return 0
     }
