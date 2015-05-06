@@ -1,5 +1,7 @@
 from jmervine/vimrc:latest
 
+env NODE_VERSION=0.12.2
+
 run \
   apt-get update && \
   apt-get install -y zsh \
@@ -10,14 +12,17 @@ run \
                      python-dev \
                      python-pip \
                      curl && \
-  curl -sL https://deb.nodesource.com/setup | bash - && \
-  apt-get install -y nodejs && \
   apt-get autoremove -y && \
   apt-get purge && \
   rm -rf /var/lib/apt/lists/*
 
-copy . /root/.dotfiles
-run  cd /root/.dotfiles; make install HOME=/root
+run \
+  curl -s http://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz | gunzip -c | tar -xf - -C /
+
+env PATH /node-v${NODE_VERSION}-linux-x64/bin:$PATH
+
+copy . /root/.zsh
+run  cd /root/.zsh; make install HOME=/root
 
 volume /root/.ssh
 
