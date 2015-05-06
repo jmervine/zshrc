@@ -311,20 +311,24 @@ fi
 # Function -- Boot2Docker
 #############################################################
 if test "$(which boot2docker 2> /dev/null)"; then
+    function docker_shellinit {
+        eval $(boot2docker shellinit)
+        echo "eval $(boot2docker shellinit)" > ~/.boot2dockerrc
+    }
+
     function docker_reset {
         echo "+ clearing docker variables"
         unset DOCKER_HOST
         unset DOCKER_CERT_PATH
         unset DOCKER_TLS_VERIFY
-        echo "" > ~/.boot2dockerrc
+        docker_shellinit
     }
 
     function docker_up {
-        docker_reset
         echo "+ starting boot2docker"
-        boot2docker up | grep "export DOCKER_" | tee ~/.boot2dockerrc
+        boot2docker up
         b2dSTATUS=$?
-        . ~/.boot2dockerrc
+        docker_reset
         return $b2dSTATUS
     }
 
@@ -361,7 +365,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
             return $?
         fi
 
-        if [[ "$@" = "reup" ]]; then
+        if [[ "$@" = "reup" || "$@" = "restart" ]]; then
             docker_reup
             return $?
         fi
