@@ -53,15 +53,19 @@ function git_branch {
 }
 
 function ruby_version {
-    if test -f Gemfile || test "$(find . -maxdepth 1 -type f -name "*.rb")"; then
-        echo "| %{$fg[red]%}`ruby -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
-    fi
+    #trying things without this now, as I pretty much only use ruby via docker
+    echo ''
+    #if test -f Gemfile || test "$(find . -maxdepth 1 -type f -name "*.rb")"; then
+        #echo "| %{$fg[red]%}`ruby -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
+    #fi
 }
 
 function node_version {
-    if test -f package.json || test "$(find . -maxdepth 1 -type f -name "*.js")"; then
-        echo "| %{$fg[green]%}`node -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
-    fi
+    #trying things without this now, as I pretty much only use node via docker
+    echo ''
+    #if test -f package.json || test "$(find . -maxdepth 1 -type f -name "*.js")"; then
+        #echo "| %{$fg[green]%}`node -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
+    #fi
 }
 
 # _phc is something I use personally, external to git
