@@ -67,6 +67,96 @@ function tm() {
 }
 
 #############################################################
+# VirtualBox Fuctions
+#############################################################
+_vb_cmd="VBoxManage"
+
+function _vb_help {
+  echo "Usage: vb ACTION VM"
+  echo " "
+  echo "Actions"
+  echo "- up|start        start/restart/wake"
+  echo "- pause           pause"
+  echo "- sleep           sleep"
+  echo "- down|stop       graceful shutdown"
+  echo "- kill|halt|off   forceful shutdown"
+  echo "- status|state    minimial status "
+  echo "- info|describe   verbose status "
+  echo "- debug|setup     start with gui for setup or troubleshooting"
+  echo "- ssh             attempt to ssh to guest vbox (fragile)"
+  echo "- help            show this message "
+  echo " "
+  echo "VMs"
+  echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
+  echo " "
+}
+
+function _vb_ssh {
+}
+
+function vb {
+  if ! test "$(which $_vb_cmd)"; then
+    echo "ERROR: VirtualBox not found"
+    echo " "
+    _vb_help
+    return 1
+  fi
+
+  if [[ "$1" = "" || "$1" = "help" ]]; then
+    _vb_help
+    return 0
+  fi
+
+  local guest=$2
+  # I am setting a default here for myself, you might want to remove this if
+  # you're not me.
+  test "$guest" || guest=Debian
+
+  # Error checking for those that remove the default guest lines above.
+  if ! test "$guest"; then
+    echo "ERROR: VirtualBox VM required"
+    echo " "
+    _vb_help
+    return 1
+  fi
+
+  case $1 in
+  up|start)
+    $_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless;;
+  debug|setup)
+    $_vb_cmd startvm $guest --type gui;;
+  down|stop)
+    $_vb_cmd controlvm $guest acpipowerbutton;;
+  pause)
+    $_vb_cmd controlvm $guest pause;;
+  sleep)
+    $_vb_cmd controlvm $guest acpisleepbutton;;
+  kill|halt|off)
+    $_vb_cmd controlvm $guest poweroff;;
+  status|state)
+    $_vb_cmd showvminfo $guest | grep State;;
+  info|describe)
+    $_vb_cmd showvminfo $guest | less;;
+  ssh)
+    # Fragile at best
+    #
+    # I setup port forwarding with this to get this working:
+    #
+    # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
+    #
+    # USER=guestuser vb ssh GuestBox
+    test "$USER" || USER=`whoami`
+    ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
+  *)
+    _vb_help
+  esac
+}
+alias vm=vb
+puts "+ initialized vb function"
+puts "+    alias: 'vm'"
+puts "+ Usage: vm ACTION VM"
+
+#############################################################
 # Encryption Fuctions
 #############################################################
 #
@@ -312,75 +402,100 @@ fi
 #############################################################
 if test "$(which boot2docker 2> /dev/null)"; then
     function docker_shellinit {
-        eval $(boot2docker shellinit)
-        echo "eval $(boot2docker shellinit)" > ~/.boot2dockerrc
-    }
-
-    function docker_reset {
-        echo "+ clearing docker variables"
-        unset DOCKER_HOST
-        unset DOCKER_CERT_PATH
-        unset DOCKER_TLS_VERIFY
-        docker_shellinit
-    }
-
-    function docker_up {
-        echo "+ starting boot2docker"
-        boot2docker up
-        b2dSTATUS=$?
-        docker_reset
-        return $b2dSTATUS
-    }
-
-    function docker_down {
-        echo "+ stopping boot2docker"
-        boot2docker down
-        return 0
+      local _shellinit="$(boot2docker shellinit)"
+      eval "$(echo ${_shellinit})"
+      echo "${_shellinit}" > ~/.boot2dockerrc
     }
 
     function docker_reup {
-        docker_down
+      echo "+ running vpn fix"
+      docker_down
+
+      echo "+ resetting vbox route"
+
+      local _iface="$(VBoxManage showvminfo boot2docker-vm --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
+      echo "++ sudo route -n add -net 192.168.59.0/24 -interface ${_iface}"
+
+      sudo route -n add -net 192.168.59.0/24 -interface ${_iface} && \
         docker_up
-        return $?
+    }
+
+    function docker_reset {
+      echo "+ clearing docker variables"
+      unset DOCKER_HOST
+      unset DOCKER_CERT_PATH
+      unset DOCKER_TLS_VERIFY
+      docker_shellinit
+    }
+
+    function docker_up {
+      echo "+ starting boot2docker"
+      boot2docker up
+      b2dSTATUS=$?
+      docker_reset
+      return $b2dSTATUS
+    }
+
+    function docker_down {
+      echo "+ stopping boot2docker"
+      boot2docker down
+      return 0
     }
 
     function docker_clean {
-        echo "+ clean containers"
-        #echo "docker ps -a  | grep 'Exited ' | awk '{ print \$NF }' | xargs docker rm"
-        docker ps -a | grep 'Exited ' | awk '{ print $NF }' | xargs docker rm
+      echo "+ clean containers"
+      docker ps -a | grep 'Exited ' | awk '{ print $NF }' | xargs docker rm
+      docker ps -a | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
 
-        echo "+ clean images"
-        #echo "docker images | grep '^<none>' | awk '{ print \$3 }'  | xargs docker rmi"
-        docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
+      echo "+ clean images"
+      docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
     }
 
     function b2d {
-        if [[ "$@" = "reset" ]]; then
-            docker_reset
-            return 0
-        fi
-
-        if [[ "$@" = "up" ]]; then
-            docker_up
-            return $?
-        fi
-
-        if [[ "$@" = "reup" || "$@" = "restart" ]]; then
-            docker_reup
-            return $?
-        fi
-
-        if [[ "$@" = "clean" ]]; then
-            docker_clean
-            return $?
-        fi
-
-        # pass on to docker by default
-        boot2docker $@
+      case "$@" in
+      reload)
+        docker_reset
+        return 0;;
+      reset|fix|reup|fuck)
+        docker_reup
+        return $?;;
+      up)
+        docker_up
+        return $?;;
+      down)
+        docker_down
+        return $?;;
+      clean)
+        docker_clean
+        return $?;;
+      esac
+      boot2docker $@
     }
 
-    puts "+ initialized boot2docker functions"
-    puts "+   usage: b2d [up|down|reup|reset]"
+    docker_exec="$(which docker)"
+    function docker {
+      case "$@" in
+      reload)
+        docker_reset
+        return 0;;
+      reset|fix|reup|fuck)
+        docker_reup
+        return $?;;
+      up)
+        docker_up
+        return $?;;
+      down)
+        docker_down
+        return $?;;
+      clean)
+        docker_clean
+        return $?;;
+      esac
+      $docker_exec $@
+    }
+
+    puts "+ initialized boot2docker/docker functions"
+    puts "+   usage: b2d|docker [up|down|reup|clean|reset]"
 fi
 
 # because some systems need this in /etc/bashrc
