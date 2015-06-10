@@ -25,6 +25,8 @@
   cia = commit -a
   ciaa = commit -a --amend
   wtf = blame
+	undo-commit = reset --soft HEAD^
+	unstage-commit = reset --soft HEAD^
 
 [github]
 	user = jmervine
