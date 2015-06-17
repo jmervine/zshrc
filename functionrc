@@ -70,98 +70,89 @@ function tm() {
 # VirtualBox Fuctions
 #############################################################
 _vb_cmd="VBoxManage"
-
-function _vb_help {
-  echo "Usage: vb ACTION VM"
-  echo " "
-  echo "Actions"
-  echo "- up|start        start/restart/wake"
-  echo "- hold|pause|save save state for restart"
-  echo "- down|stop       graceful shutdown"
-  echo "- kill|halt|off   forceful shutdown"
-  echo "- status|state    minimial status "
-  echo "- info|describe   verbose status "
-  echo "- debug|setup     start with gui for setup or troubleshooting"
-  echo "- ssh|connect     connect via ssh"
-  echo "- help            show this message "
-  echo " "
-  echo "VMs"
-  echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
-  echo " "
-}
-
-function vb {
-  if ! test "$(which $_vb_cmd)"; then
-    echo "ERROR: VirtualBox not found"
+if test "$(which $_vb_cmd 2> /dev/null)"; then
+  function _vb_help {
+    echo "Usage: vb ACTION VM"
     echo " "
-    _vb_help
-    return 1
-  fi
-
-  if [[ "$1" = "" || "$1" = "help" ]]; then
-    _vb_help
-    return 0
-  fi
-
-  local guest=$2
-  # I am setting a default here for myself, you might want to remove this if
-  # you're not me.
-  test "$guest" || guest=Debian
-
-  # Error checking for those that remove the default guest lines above.
-  if ! test "$guest"; then
-    echo "ERROR: VirtualBox VM required"
+    echo "Actions"
+    echo "- up|start        start/restart/wake"
+    echo "- pause           pause"
+    echo "- sleep           sleep"
+    echo "- down|stop       graceful shutdown"
+    echo "- kill|halt|off   forceful shutdown"
+    echo "- status|state    minimial status "
+    echo "- info|describe   verbose status "
+    echo "- debug|setup     start with gui for setup or troubleshooting"
+    echo "- ssh             attempt to ssh to guest vbox (fragile)"
+    echo "- help            show this message "
     echo " "
-    _vb_help
-    return 1
-  fi
+    echo "VMs"
+    echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
+    echo " "
+  }
 
-  case $1 in
-  up|start)
-    $_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless;;
-  debug|setup)
-    $_vb_cmd startvm $guest --type gui;;
-  down|stop)
-    $_vb_cmd controlvm $guest acpipowerbutton;;
-  pause|save)
-    $_vb_cmd controlvm $guest save;;
-  kill|halt|off)
-    $_vb_cmd controlvm $guest poweroff;;
-  status|state)
-    $_vb_cmd showvminfo $guest | grep State;;
-  info|describe)
-    $_vb_cmd showvminfo $guest | less;;
-  ssh|connect)
-    # ensure running
-    ($_vb_cmd showvminfo $guest | grep State | grep "powered off") && \
-      ($_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless)
-    # ensure networking
-    vb fuck
-    # for this to work add 'Host' entry for your $guest os in ~/.ssh/config
-    ssh -v $guest;;
-  fuck)
-    local _iface="$(VBoxManage showvminfo $guest --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
-    echo "++ sudo route -n add -net 192.168.59.0/24 -interface ${_iface}"
+  function vb {
+    if ! test "$(which $_vb_cmd)"; then
+      echo "ERROR: VirtualBox not found"
+      echo " "
+      _vb_help
+      return 1
+    fi
 
-    sudo route -n add -net 192.168.59.0/24 -interface ${_iface};;
-  ssh)
-    # Fragile at best
-    #
-    # I setup port forwarding with this to get this working:
-    #
-    # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
-    #
-    # USER=guestuser vb ssh GuestBox
-    test "$USER" || USER=`whoami`
-    ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
-  *)
-    _vb_help
-  esac
-}
-alias vm=vb
-puts "+ initialized vb function"
-puts "+    alias: 'vm'"
-puts "+ Usage: vm ACTION VM"
+    if [[ "$1" = "" || "$1" = "help" ]]; then
+      _vb_help
+      return 0
+    fi
+
+    local guest=$2
+    # I am setting a default here for myself, you might want to remove this if
+    # you're not me.
+    test "$guest" || guest=Debian
+
+    # Error checking for those that remove the default guest lines above.
+    if ! test "$guest"; then
+      echo "ERROR: VirtualBox VM required"
+      echo " "
+      _vb_help
+      return 1
+    fi
+
+    case $1 in
+    up|start)
+      $_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless;;
+    debug|setup)
+      $_vb_cmd startvm $guest --type gui;;
+    down|stop)
+      $_vb_cmd controlvm $guest acpipowerbutton;;
+    pause)
+      $_vb_cmd controlvm $guest pause;;
+    sleep)
+      $_vb_cmd controlvm $guest acpisleepbutton;;
+    kill|halt|off)
+      $_vb_cmd controlvm $guest poweroff;;
+    status|state)
+      $_vb_cmd showvminfo $guest | grep State;;
+    info|describe)
+      $_vb_cmd showvminfo $guest | less;;
+    ssh)
+      # Fragile at best
+      #
+      # I setup port forwarding with this to get this working:
+      #
+      # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
+      #
+      # USER=guestuser vb ssh GuestBox
+      test "$USER" || USER=`whoami`
+      ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
+    *)
+      _vb_help
+    esac
+  }
+  alias vm=vb
+  puts "+ initialized vb function"
+  puts "+    alias: 'vm'"
+  puts "+ Usage: vm ACTION VM"
+fi
 
 #############################################################
 # Encryption Fuctions
