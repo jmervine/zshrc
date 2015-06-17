@@ -76,22 +76,18 @@ function _vb_help {
   echo " "
   echo "Actions"
   echo "- up|start        start/restart/wake"
-  echo "- pause           pause"
-  echo "- sleep           sleep"
+  echo "- hold|pause|save save state for restart"
   echo "- down|stop       graceful shutdown"
   echo "- kill|halt|off   forceful shutdown"
   echo "- status|state    minimial status "
   echo "- info|describe   verbose status "
   echo "- debug|setup     start with gui for setup or troubleshooting"
-  echo "- ssh             attempt to ssh to guest vbox (fragile)"
+  echo "- ssh|connect     connect via ssh"
   echo "- help            show this message "
   echo " "
   echo "VMs"
   echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
   echo " "
-}
-
-function _vb_ssh {
 }
 
 function vb {
@@ -127,16 +123,27 @@ function vb {
     $_vb_cmd startvm $guest --type gui;;
   down|stop)
     $_vb_cmd controlvm $guest acpipowerbutton;;
-  pause)
-    $_vb_cmd controlvm $guest pause;;
-  sleep)
-    $_vb_cmd controlvm $guest acpisleepbutton;;
+  pause|save)
+    $_vb_cmd controlvm $guest save;;
   kill|halt|off)
     $_vb_cmd controlvm $guest poweroff;;
   status|state)
     $_vb_cmd showvminfo $guest | grep State;;
   info|describe)
     $_vb_cmd showvminfo $guest | less;;
+  ssh|connect)
+    # ensure running
+    ($_vb_cmd showvminfo $guest | grep State | grep "powered off") && \
+      ($_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless)
+    # ensure networking
+    vb fuck
+    # for this to work add 'Host' entry for your $guest os in ~/.ssh/config
+    ssh -v $guest;;
+  fuck)
+    local _iface="$(VBoxManage showvminfo $guest --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
+    echo "++ sudo route -n add -net 192.168.59.0/24 -interface ${_iface}"
+
+    sudo route -n add -net 192.168.59.0/24 -interface ${_iface};;
   ssh)
     # Fragile at best
     #
@@ -444,8 +451,7 @@ if test "$(which boot2docker 2> /dev/null)"; then
 
     function docker_clean {
       echo "+ clean containers"
-      docker ps -a | grep 'Exited ' | awk '{ print $NF }' | xargs docker rm
-      docker ps -a | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
+      docker ps -a | grep -v 'NAMES' | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
 
       echo "+ clean images"
       docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
