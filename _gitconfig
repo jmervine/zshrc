@@ -1,32 +1,145 @@
-[color]
-  ui = true
-
-[user]
-	name = Josh Mervine
-	email = jmervine@yp.com
-
 [core]
   editor = vim
 
-[push]
-  default = tracking
-
-[alias]
-  st = status
-  cp = cherry-pick
-  co = checkout
-  cl = checkout -
-  ci = commit
-  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-  lp = log -p
-  pa = pull --all
-  ba = branch -a
-  br = branch -r
-  cia = commit -a
-  ciaa = commit -a --amend
-  wtf = blame
-	undo-commit = reset --soft HEAD^
-	unstage-commit = reset --soft HEAD^
+[user]
+    name = Josh Mervine
+    email = joshua@mervine.net
 
 [github]
-	user = jmervine
+    user = jmervine
+
+[color]
+    status = auto
+    diff = auto
+    ui = true
+
+[rerere]
+    enabled = true
+
+[branch]
+    autosetupmerge = true
+
+[push]
+    default = upstream
+
+[advice]
+    statusHints = false
+
+[alias]
+    # add
+    a = add
+
+    # commit
+    c = commit -m
+    cm = commit -am
+    ci = commit
+    amend = commit --amend
+    ammend = commit --amend
+    ciaa = commit -a --amend
+    cia = commit -a
+
+    # branching
+    b = branch
+    ba = branch -a
+    br = branch -r
+
+
+    # checkout
+    co = checkout
+    cl = checkout -
+    nb = checkout -b
+
+    # cherry-pick
+    cp = cherry-pick
+
+    # diff
+    d = diff
+    dc = diff --cached
+    last = diff HEAD^
+
+    # log
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    lp = log -p
+    log = log --decorate --graph --date=short
+    l = log
+    changes = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\" --name-status
+    short = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\"
+    changelog = log --pretty=format:\" * %s\"
+    shortnocolor = log --pretty=format:\"%h %cr %cn %s\"
+
+    # pull
+    pl = pull
+
+    # push
+    ps = push
+    pa = pull --all
+
+    # reset
+    unstage = reset HEAD
+    uncommit = reset --soft HEAD^
+    filelog = log -u
+    mt = mergetool
+
+    # stash
+    ss = stash
+    sl = stash list
+    sa = stash apply
+    sd = stash drop
+
+    # status
+    s = status -s
+    st = status
+    stat = status
+
+    # tag
+    t = tag -n
+
+    # Cleans out your workspace.
+    nuke = !read -p 'Are you sure? [y,n]' -n 1 -r && [[ $REPLY =~ ^[Yy]$ ]] && git clean -fd && git reset --hard
+
+    # Show unpushed/ahead changes
+    ahead = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git log origin/$GIT_CURRENT_BRANCH..$GIT_CURRENT_BRANCH --oneline
+    # Show the diff of upushed/ahead changes
+    ahead-diff = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git diff origin/$GIT_CURRENT_BRANCH..$GIT_CURRENT_BRANCH
+
+    # Show unpulled/behind
+    behind = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git log $GIT_CURRENT_BRANCH..origin/$GIT_CURRENT_BRANCH --oneline
+
+    # Show diff of unpulled/behind changes
+    behind-diff = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git diff $GIT_CURRENT_BRANCH..origin/$GIT_CURRENT_BRANCH
+
+    # Merge the orgin branch into local branch.
+    take = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git merge origin/$GIT_CURRENT_BRANCH
+
+    # Lose any unpushed changes
+    lose = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git reset --hard origin/$GIT_CURRENT_BRANCH
+
+    # Display project root
+    root = !ROOT=$(pwd) && echo $ROOT
+
+    # Stash All
+    sa = !git add -A && git stash
+
+    # List branches according to you most recent checkouts.
+    recent = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git reflog | grep checkout | cut -d : -f 3 | cut -d ' ' -f 6 | tail -n +2 | cat -n | sort -k2,2 -u | sort -k1,1 -n | cut -f 2 | grep -e '.\\{40\\}' -v | grep "^$GIT_CURRENT_BRANCH$" -v
+
+    publish = !BRANCH=$(git branch | grep \\* | awk '{print $2}') && git push -u origin $BRANCH
+
+    # blame
+    wtf = blame
+
+    # other
+    undo = reset --soft HEAD^
+    prune = git remote prune origin
+
+[format]
+    pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
+
+[diff]
+    # Git diff will use (i)ndex, (w)ork tree, (c)ommit and (o)bject
+    # instead of a/b/c/d as prefixes for patches
+    mnemonicprefix = true
+
+[help]
+    autocorrect = 0
+
