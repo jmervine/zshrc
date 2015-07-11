@@ -48,6 +48,7 @@
     co = checkout
     cl = checkout -
     nb = checkout -b
+    cb = checkout -b
 
     # cherry-pick
     cp = cherry-pick
@@ -131,7 +132,7 @@
 
     # other
     undo = reset --soft HEAD^
-    prune = git remote prune origin
+    prune = !git fetch -p && git remote prune origin
 
     # config
     conf = config
