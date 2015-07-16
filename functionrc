@@ -75,21 +75,34 @@ if test "$(which $_vb_cmd 2> /dev/null)"; then
     echo "Usage: vb ACTION VM"
     echo " "
     echo "Actions"
-    echo "- up|start        start/restart/wake"
-    echo "- pause           pause"
-    echo "- sleep           sleep"
-    echo "- down|stop       graceful shutdown"
-    echo "- kill|halt|off   forceful shutdown"
-    echo "- status|state    minimial status "
-    echo "- info|describe   verbose status "
-    echo "- debug|setup     start with gui for setup or troubleshooting"
-    echo "- ssh             attempt to ssh to guest vbox (fragile)"
-    echo "- help            show this message "
+    echo "- up|start          start/restart/wake"
+    echo "- pause             pause"
+    echo "- sleep             sleep"
+    echo "- down|stop         graceful shutdown"
+    echo "- kill|halt|off     forceful shutdown"
+    echo "- status|state      minimial status "
+    echo "- info|describe     verbose status "
+    echo "- debug|setup       start with gui for setup or troubleshooting"
+    echo "- ssh               attempt to ssh to guest vbox (fragile)"
+    echo "- forward VM FROM [TO]"
+    echo "                    add port forward"
+    echo "- ports             list forwarded ports"
+    echo "- fix               run network fix"
+    echo "- help              show this message "
     echo " "
     echo "VMs"
     echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
     echo " "
   }
+
+  function _vm_net_fix {
+    local _iface="$(VBoxManage showvminfo $1 --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
+    local _block="$(ifconfig | grep "inet.*\.255" | grep -v ".1.255" | awk '{print $NF}' | sed 's/\.255//')"
+    echo "++ sudo route -n add -net ${_block}.0/24 -interface ${_iface}"
+
+    sudo route -n add -net ${_block}.0/24 -interface ${_iface}
+  }
+
 
   function vb {
     if ! test "$(which $_vb_cmd)"; then
@@ -134,6 +147,19 @@ if test "$(which $_vb_cmd 2> /dev/null)"; then
       $_vb_cmd showvminfo $guest | grep State;;
     info|describe)
       $_vb_cmd showvminfo $guest | less;;
+    fix|fuck)
+      _vm_net_fix $guest;;
+    ports)
+      $_vb_cmd showvminfo $guest | grep Rule | awk -F',' '{print $1" "$4}' | awk '{str = sprintf("%-10s %s",$6,$NF); print str}';;
+    forward)
+      local _from=$3
+      local _to=$4
+      if ! test "$_from"; then
+        _vb_help
+        return 1
+      fi
+      test "$_to" || _to=$_from
+      $_vb_cmd modifyvm $guest --natpf1 ",tcp,,$_from,,$_to";;
     ssh)
       # Fragile at best
       #
@@ -142,6 +168,7 @@ if test "$(which $_vb_cmd 2> /dev/null)"; then
       # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
       #
       # USER=guestuser vb ssh GuestBox
+      _vm_net_fix $guest
       test "$USER" || USER=`whoami`
       ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
     *)
