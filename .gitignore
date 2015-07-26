@@ -1,1 +1,24 @@
 test
+
+# just to be safe
+.ssh
+id_rsa*
+authorized_keys
+*.pem
+.ssh/environment
+.aws
+credentials
+.netrc
+.gemrc
+.npmrc
+.dockercfg
+.gist-vim
+.zcompdump
+*history
+.npm
+.gem
+.go
+.config
+.vimundo
+.vimswap
+.viminfo
