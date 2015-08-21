@@ -90,4 +90,10 @@ alias gh="if [ \`uname -s\` = \"Darwin\" ]; then browser=\"open\"; else browser=
 # thefuck -> fuck
 alias fuck='eval $(thefuck $(fc -ln -1))'
 
+# heroku
+alias herouk=heroku
+alias heorku=heroku
+alias hero=heroku
+alias h=heroku
+
 # vim: ft=sh:

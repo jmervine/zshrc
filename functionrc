@@ -27,6 +27,11 @@ function puts {
     fi
 }
 
+function x {
+  echo "+ $@"
+  $@
+}
+
 # Keep zshrc prompt from hanging when ruby isn't installed
 if [[ "$(which ruby)" = "ruby not found" ]]; then
   function ruby() {
