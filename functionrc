@@ -527,6 +527,25 @@ if test "$(which boot2docker 2> /dev/null)"; then
     puts "+   usage: b2d|docker [up|down|reup|clean|reset]"
 fi
 
+# tmate
+function tmate {
+  local _sock=/tmp/tmate.sock
+  local _tmate=/usr/local/bin/tmate
+
+  if [ -z "$@" ]; then
+    $_tmate -S $_sock
+  else
+    case $@ in
+    p|print|ssh|url)
+      $_tmate -S $_sock display -p '#{tmate_ssh}';;
+    ro|printro|sshro|rourl|urlro|rossh)
+      $_tmate -S $_sock display -p '#{tmate_ssh_ro}';;
+    *)
+      $_tmate $@
+    esac
+  fi
+}
+
 # because some systems need this in /etc/bashrc
 function shopt {
   bash -lc "shopt $@"
