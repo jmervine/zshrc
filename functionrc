@@ -541,9 +541,53 @@ function tmate {
     ro|printro|sshro|rourl|urlro|rossh)
       $_tmate -S $_sock display -p '#{tmate_ssh_ro}';;
     *)
-      $_tmate $@
+      $_tmate -S $_sock
     esac
   fi
+}
+
+# Create a new directory and enter it
+mkd() {
+    mkdir -p "$@" && cd "$@"
+}
+
+# `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
+# the `.git` directory, listing directories first. The output gets piped into
+# `less` with options to preserve color and line numbers, unless the output is
+# small enough for one screen.
+tre() {
+    tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
+}
+
+# Get colors in manual pages
+man() {
+    env \
+        LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+        LESS_TERMCAP_md=$(printf "\e[1;31m") \
+        LESS_TERMCAP_me=$(printf "\e[0m") \
+        LESS_TERMCAP_se=$(printf "\e[0m") \
+        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+        LESS_TERMCAP_ue=$(printf "\e[0m") \
+        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+        man "$@"
+}
+
+# go to a folder easily in your gopath
+gogo(){
+    local d=$1
+    if [[ -z $d ]]; then
+        echo "You need to specify a project name."
+        return 1
+    fi
+    # search for the project dir in the GOPATH
+    local path=( `find "${GOPATH}/src" -iname "$d" -type d | awk '{print length, $0;}' | sort -n | awk '{print $2}'` )
+    if [ "$path" == "" ] || [ "${path[*]}" == "" ]; then
+        echo "Could not find a directory named $d in $GOPATH"
+        echo "Maybe you need to 'go get' it ;)"
+        return 1
+    fi
+    # enter the first path found
+    cd "${path[0]}"
 }
 
 # because some systems need this in /etc/bashrc

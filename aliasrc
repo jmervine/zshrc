@@ -36,7 +36,41 @@ alias bi="bundle install --path ./vendor/bundle"
 alias bu="bundle update"
 
 # ls colors shortcut
-ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G'
+# Detect which `ls` flavor is in use
+if ls --color > /dev/null 2>&1; then # GNU `ls`
+    colorflag="--color"
+else # OS X `ls`
+    colorflag="-G"
+fi
+
+# List all files colorized in long format
+alias l="ls -lF ${colorflag}"
+
+# List all files colorized in long format, including dot files
+alias la="ls -laF ${colorflag}"
+
+# List only directories
+alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
+
+# Always use color output for `ls`
+alias ls="command ls ${colorflag}"
+
+# Enable aliases to be sudo’ed
+alias sudo='sudo '
+
+# IP addresses
+alias pubip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="sudo ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+
+# One of @janmoesen’s ProTip™s
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+  alias "$method"="lwp-request -m '$method'"
+done
+
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
 
 # shortcut to quicly remove vim temp files
 alias rmswp='find . -type f -name *.swp | xargs rm -v'
@@ -102,5 +136,9 @@ alias dcu="docker-compose up"
 alias dcb="docker-compose build"
 alias dcr="docker-compose run --service-ports"
 alias dcrm="docker-compose run --rm --service-ports"
+
+# go random
+alias Go="cd $(go env GOPATH)/src/github.com/jmervine/"
+alias Goh="cd $(go env GOPATH)/src/github.com/heroku/"
 
 # vim: ft=sh:
