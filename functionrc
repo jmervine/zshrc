@@ -547,7 +547,7 @@ function tmate {
 }
 
 # Create a new directory and enter it
-mkd() {
+function mkd() {
     mkdir -p "$@" && cd "$@"
 }
 
@@ -555,12 +555,12 @@ mkd() {
 # the `.git` directory, listing directories first. The output gets piped into
 # `less` with options to preserve color and line numbers, unless the output is
 # small enough for one screen.
-tre() {
+function tre() {
     tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
 }
 
 # Get colors in manual pages
-man() {
+function man() {
     env \
         LESS_TERMCAP_mb=$(printf "\e[1;31m") \
         LESS_TERMCAP_md=$(printf "\e[1;31m") \
@@ -573,21 +573,23 @@ man() {
 }
 
 # go to a folder easily in your gopath
-gogo(){
+function gogo(){
     local d=$1
+    local gopath=$(go env GOPATH)
+
     if [[ -z $d ]]; then
         echo "You need to specify a project name."
         return 1
     fi
-    # search for the project dir in the GOPATH
-    local path=( `find "${GOPATH}/src" -iname "$d" -type d | awk '{print length, $0;}' | sort -n | awk '{print $2}'` )
-    if [ "$path" == "" ] || [ "${path[*]}" == "" ]; then
-        echo "Could not find a directory named $d in $GOPATH"
+
+    local _path="$(/usr/bin/find "${gopath}/src" -iname "$d" -type d | awk '{print length, $0;}' | sort -n | awk '{print $2}' | xargs | awk '{print $1}')"
+    if [[ -z $_path ]]; then
+        echo "Could not find a directory named $d in ${gopath}"
         echo "Maybe you need to 'go get' it ;)"
         return 1
     fi
-    # enter the first path found
-    cd "${path[0]}"
+
+    cd "$_path"
 }
 
 # because some systems need this in /etc/bashrc
