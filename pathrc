@@ -18,23 +18,11 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 export PYTHONPATH=/home/jmervine/Scripts/python/lib:$PYTHONPATH
 
 #############################################################
-# RVM Environment
-#############################################################
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && \
-  . "$HOME/.rvm/scripts/rvm" # Load RVM function
-
-#############################################################
 # GOPATH
 #############################################################
 export PATH=/usr/local/go/bin:${PATH}
 export GOPATH=$HOME/.go
 export GOBIN=$HOME/.bin
-
-#############################################################
-# RBENV
-#############################################################
-export PATH="$HOME/.rbenv/bin:$PATH"
-#eval "$(rbenv init -)"
 
 #############################################################
 # Scala

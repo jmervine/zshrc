@@ -73,7 +73,7 @@ done
 alias map="xargs -n1"
 
 # shortcut to quicly remove vim temp files
-alias rmswp='find . -type f -name *.swp | xargs rm -v'
+alias rmswp='rm -fv ~/.vimswap/* ; find . -type f -name *.swp | xargs rm -fv'
 
 if test "$(which ack-grep 2> /dev/null)"; then
   alias ack="ack-grep"
