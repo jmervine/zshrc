@@ -576,7 +576,7 @@ function godev() {
   local devpath="${HOME}/Development"
 
   if [[ -z $1 ]]; then
-    cd $devpath
+    cd "$devpath"
     return
   fi
 
@@ -585,11 +585,11 @@ function godev() {
   if [[ -z $_found ]]; then
     echo "Could not find a directory name containing \"$1\" in:"
     echo "$(ls -lF | grep '^d' | awk '{print $NF}' |sed 's/\///' | xargs)"
-    cd $devpath
+    cd "$devpath"
     return 1
   fi
 
-  cd $_found
+  cd "$_found"
 }
 alias Dev="godev"
 alias dev="godev"
@@ -599,16 +599,24 @@ alias god="godev"
 # go to a folder easily in your gopath
 function gogo(){
     local d=$1
-    local gopath=$(go env GOPATH)
+    local gopath=$(go env GOPATH)/src
 
     if [[ -z $d ]]; then
         echo "You need to specify a project name."
         return 1
     fi
 
-    local _path="$(/usr/bin/find "${gopath}/src" -iname "$d" -type d | awk '{print length, $0;}' | sort -n | awk '{print $2}' | xargs | awk '{print $1}')"
+    # check for my packages first...
+    local _mine="$(/usr/bin/find "${gopath}" -iname "*$d*" -type d | grep -v "Godeps" | grep "jmervine\/*$d*" | sort | xargs | awk '{print $1}')"
+    if [[ ! -z $_mine ]]; then
+      cd "$_mine"
+      return
+    fi
+
+    # check for others second...
+    local _path="$(/usr/bin/find "${gopath}" -iname "*$d*" -type d | grep -v "Godeps" | xargs | awk '{print $1}')"
     if [[ -z $_path ]]; then
-        echo "Could not find a directory named $d in ${gopath}"
+        echo "Could not find a directory containing \"*$d*\" in ${gopath}/..."
         echo "Maybe you need to 'go get' it ;)"
         return 1
     fi
