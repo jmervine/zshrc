@@ -607,7 +607,7 @@ function gogo(){
     fi
 
     # check for my packages first...
-    local _mine="$(/usr/bin/find "${gopath}" -iname "*$d*" -type d | grep -v "Godeps" | grep "jmervine\/*$d*" | sort | xargs | awk '{print $1}')"
+    local _mine="$(/usr/bin/find "${gopath}" -iname "*$d*" -type d | grep -v "Godeps" | grep "${USER}\/*$d*" | sort | xargs | awk '{print $1}')"
     if [[ ! -z $_mine ]]; then
       cd "$_mine"
       return
