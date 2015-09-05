@@ -572,6 +572,30 @@ function man() {
         man "$@"
 }
 
+function godev() {
+  local devpath="${HOME}/Development"
+
+  if [[ -z $1 ]]; then
+    cd $devpath
+    return
+  fi
+
+  local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*")"
+
+  if [[ -z $_found ]]; then
+    echo "Could not find a directory name containing \"$1\" in:"
+    echo "$(ls -lF | grep '^d' | awk '{print $NF}' |sed 's/\///' | xargs)"
+    cd $devpath
+    return 1
+  fi
+
+  cd $_found
+}
+alias Dev="godev"
+alias dev="godev"
+alias God="godev"
+alias god="godev"
+
 # go to a folder easily in your gopath
 function gogo(){
     local d=$1
