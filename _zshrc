@@ -22,6 +22,7 @@ _include ${DOTFILES}/aliasrc
 _include ${DOTFILES}/prompt
 _include ${DOTFILES}/completion/general.sh
 _include ${DOTFILES}/functionrc
+_include ${DOTFILES}/**/*.plugin.zsh
 
 # For hosts using boot2docker
 # - needs to be manually
@@ -56,4 +57,3 @@ setopt AUTO_PUSHD
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
-

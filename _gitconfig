@@ -63,7 +63,7 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     lp = log -p
     log = log --decorate --graph --date=short
-    l = log
+    l = log --decorate --graph --date=short
     changes = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\" --name-status
     short = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\"
     changelog = log --pretty=format:\" * %s\"
@@ -90,7 +90,7 @@
 
     # status
     s = status -s
-    st = status
+    st = status -s
     stat = status
 
     # tag
