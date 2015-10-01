@@ -173,15 +173,126 @@ if test "$(which $_vb_cmd 2> /dev/null)"; then
       # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
       #
       # USER=guestuser vb ssh GuestBox
-      _vm_net_fix $guest
+      #_vm_net_fix $guest
       test "$USER" || USER=`whoami`
       ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
     *)
       _vb_help
     esac
   }
-  alias vm=vb
+  #alias vm=vb
   puts "+ initialized vb function"
+fi
+
+_pl_cmd="prlctl"
+if test "$(which $_pl_cmd 2> /dev/null)"; then
+  function _pl_help {
+    echo "Usage: pl|vm ACTION VM"
+    echo " "
+    echo "Actions"
+    echo "- list"
+    echo "- start"
+    echo "- resume"
+    echo "- stop"
+    echo "- pause"
+    echo "- kill"
+    echo "- status"
+    echo "- info"
+    echo "- ssh     ssh in to host via shared interface"
+    echo "- enter   enter host as root via Parallels"
+    echo "- addr    show shared ip address"
+    echo "- iface   show shared interface"
+    echo "- help    show this message "
+    echo " "
+    echo "VMs"
+    echo "$($_pl_cmd list)"
+    echo " "
+  }
+
+  function _pl_net_fix {
+    local _iface="$(VBoxManage showvminfo $1 --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
+    local _block="$(ifconfig | grep "inet.*\.255" | grep -v ".1.255" | awk '{print $NF}' | sed 's/\.255//')"
+    echo "++ sudo route -n add -net ${_block}.0/24 -interface ${_iface}"
+
+    sudo route -n add -net ${_block}.0/24 -interface ${_iface}
+  }
+
+  function pl {
+    if ! test "$(which $_pl_cmd)"; then
+      echo "ERROR: VirtualBox not found"
+      echo " "
+      _pl_help
+      return 1
+    fi
+
+    if [[ "$1" = "" || "$1" = "help" ]]; then
+      _pl_help
+      return 0
+    fi
+
+    local guest=$2
+    # I am setting a default here for myself, you might want to remove this if
+    # you're not me.
+    test "$guest" || guest=Debian
+
+    # Error checking for those that remove the default guest lines above.
+    if ! test "$guest"; then
+      echo "ERROR: VirtualBox VM required"
+      echo " "
+      _pl_help
+      return 1
+    fi
+
+    case $1 in
+    list)
+      $_pl_cmd list --all;;
+    start)
+      $_pl_cmd start $guest;;
+    restart)
+      $_pl_cmd restart $guest;;
+    resume)
+      $_pl_cmd resume $guest;;
+    stop)
+      $_pl_cmd stop $guest;;
+    pause)
+      $_pl_cmd pause $guest;;
+    sleep)
+      $_pl_cmd sleep $guest;;
+    kill)
+      $_pl_cmd stop $guest --kill;;
+    status)
+      $_pl_cmd status $guest;;
+    info)
+      $_pl_cmd list -i $guest | less;;
+    iface)
+      $_pl_cmd list -i $guest | grep "shared" | awk '{print $1}' | sed 's/net/eth/';;
+    enter)
+      $_pl_cmd enter $guest;;
+    addr)
+      $_pl_cmd exec $guest ifconfig $(pl iface) | grep 'inet addr' | awk '{print $2}' | awk -F':' '{print $NF}';;
+    hosts)
+      sudo bash -c "echo -e \"`cat /private/etc/hosts | grep -v "$guest\."`\n`pl addr $guest` $guest debian.localhost.com vm.localhost.com debian vm\n\" > /private/etc/hosts"
+      sudo dscacheutil -flushcache;;
+    fix)
+      # only works for linux guests
+      if ! ping -c 1 -t 5 $guest > /dev/null; then
+        $_pl_cmd exec $guest /etc/init.d/networking restart
+      fi;;
+    ping)
+      ping -c 1 $guest;;
+    ssh)
+      if ! ping -c 1 -t 2 $guest > /dev/null; then
+        pl fix $guest
+      fi
+      test "$USER" || USER=`whoami`
+      test "`cat /private/etc/hosts | grep $guest`" || pl hosts $guest
+      ssh $USER@$guest;;
+    *)
+      _pl_help
+    esac
+  }
+  alias vm=pl
+  puts "+ initialized pl function"
   puts "+    alias: 'vm'"
   puts "+ Usage: vm ACTION VM"
 fi
