@@ -691,7 +691,7 @@ function godev() {
     return
   fi
 
-  local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*")"
+  local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*" | xargs | awk '{print $1}')"
 
   if [[ -z $_found ]]; then
     echo "Could not find a directory name containing \"$1\" in:"
