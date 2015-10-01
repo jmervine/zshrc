@@ -96,7 +96,8 @@ function precmd() {
     else
       local p_git_branch=" %T "
     fi
-    local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+    #local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+    local return_code="%(?..%{$fg[red]%}%? ${emoji[no_entry]}%{$reset_color%})"
 
     test "$PS_SIGN" || export PS_SIGN="[I] "
 
@@ -107,7 +108,16 @@ function precmd() {
       pointer="$"
     fi
 
-    PS1="%{$fg[yellow]%}[%n@%m] %{$fg[blue]%}%~%{$reset_color%} ${pointer} "
+    local os_type
+    if test "$(uname | grep Linux)"; then
+      os_type="${emoji[white_right_pointing_backhand_index]}  ${emoji[penguin]} "
+    elif test "$(uname | grep Darwin)"; then
+      os_type="${emoji[white_right_pointing_backhand_index]}  ${emoji[personal_computer]} "
+    else
+      os_type="%{$fg[yellow]%}[%n@%m]"
+    fi
+
+    PS1="${os_type} %{$fg[blue]%}%~%{$reset_color%} ${emoji[white_right_pointing_backhand_index]}  "
     RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [${p_git_branch}`_phc``ruby_version``node_version`]"
 }
 
