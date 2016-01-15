@@ -101,13 +101,6 @@ function precmd() {
 
     test "$PS_SIGN" || export PS_SIGN="[I] "
 
-    local pointer
-    if test "${emoji[white_right_pointing_backhand_index]}"; then
-      pointer="${emoji[white_right_pointing_backhand_index]} "
-    else
-      pointer="$"
-    fi
-
     local os_type
     if test "$(uname | grep Linux)"; then
       os_type="${emoji[white_right_pointing_backhand_index]}  ${emoji[penguin]} "

@@ -214,6 +214,23 @@ function gitignore {
     echo "$1" >> $HOME/.gitignore
 }
 
+function git_clean {
+  x git pull
+  x git fetch -p
+  x git remote prune origin
+}
+
+function git_clean_force {
+  local _branch="$1"
+  [[ -z $_branch ]] && _branch=master
+
+  x git fetch -p
+  x git remote prune origin
+
+  echo "git branch --merged | grep -v "\*" | grep -v "$_branch" | grep -v dev | xargs -n 1 git branch -d"
+  git branch --merged | grep -v "\*" | grep -v "$_branch" | grep -v dev | xargs -n 1 git branch -d
+}
+
 
 #############################################################
 # Function - Finding files and directories
@@ -234,12 +251,16 @@ function fd() {
 SSH_ENV="$HOME/.ssh/environment"
 
 function start_agent {
-     echo "Initialising new SSH agent..."
-     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-     echo succeeded
-     chmod 600 "${SSH_ENV}"
-     . "${SSH_ENV}" > /dev/null
-     /usr/bin/ssh-add;
+  echo "Initialising new SSH agent..."
+  /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+  echo succeeded
+  chmod 600 "${SSH_ENV}"
+  . "${SSH_ENV}" > /dev/null
+
+  for k in $(find ~/.ssh -type f -name "*_rsa"); do
+    echo "Adding $k"
+    /usr/bin/ssh-add $k
+  done
 }
 
 # Source SSH settings, if applicable
@@ -602,8 +623,9 @@ function gogo(){
     local gopath=$(go env GOPATH)/src
 
     if [[ -z $d ]]; then
-        echo "You need to specify a project name."
-        return 1
+        echo "Warning: no project specified attempting to find go:gh/user"
+        x cd "$gopath/github.com/`whoami`"
+        return $?
     fi
 
     # check for my packages first...
@@ -624,8 +646,56 @@ function gogo(){
     cd "$_path"
 }
 
+## Noop Server - Clean http listener
+function listen {
+  local port="$1"
+  local addr="$2"
+
+  [[ -z $port ]] && port=3000
+  [[ -z $addr ]] && addr=0.0.0.0
+
+  x docker run --rm -it -p "$port:$port" -e PORT=$port -e ADDR=$addr jmervine/noop-server
+}
+
+## fix up docker generated files
+function own {
+  local _path="$1"
+  [[ -z $_path ]] && _path="."
+
+  find $_path -user root | xargs sudo chown jmervine:
+}
+
 # because some systems need this in /etc/bashrc
 function shopt {
   bash -lc "shopt $@"
 }
+
+function icdep {
+# usages for full deploy:
+# $ icdep clone watchtower-tng 1.0.0
+# $ icdep pull watchtower-tng 1.0.0
+# $ icdep deploy watchtower-tng 1.0.0
+
+  local action=$1
+  local app=$2
+  local tag=$3
+  local user=$4
+  local usage="icdep ACTION APP TAG|BRANCH [USER]"
+
+  if [ -z $action ] || [ -z $app ] || [ -z $tag ]; then
+    echo $usage
+    return 1
+  fi
+
+  [[ -z $user ]] && user=`whoami`
+
+  if [ "$action" = "clone" ]; then
+    ion-client run -a deploymaster bin/$action -c $app -b $tag
+    return $?
+  fi
+
+  ion-client run -a deploymaster bin/$action -c $app -b $tag -u $user
+  return $?
+}
+
 # vim: ft=sh:
