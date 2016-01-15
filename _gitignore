@@ -90,3 +90,5 @@ oradiag_root
 .netrc
 .rdebug_hist
 .xsession-errors
+
+.aws_creds.yml
