@@ -97,7 +97,9 @@
     t = tag -n
 
     # Cleans out your workspace.
-    nuke = !read -p 'Are you sure? [y,n]' -n 1 -r && [[ $REPLY =~ ^[Yy]$ ]] && git clean -fd && git reset --hard
+    ;nuke = !git clean -fdn && read -p 'The above files will be removed, are you sure? [y,n]' -n1 -r && [[ $REPLY =~ ^[Yy]$ ]] && git clean -fd && git reset --hard
+    ;nuke = "!f() { git clean -fdn && read -p 'The above files will be removed, are you sure? [y,n]' -r REPLY && [[ $REPLY =~ ^[Yy]$ ]] && ( git clean -fd && git reset --hard ); }; f"
+    ;nuke = !git clean -fdn && read -p 'The above files will be removed, are you sure? [y,n]' -r REPLY && echo $REPLY | grep -i '^y$|^yes$' &> /dev/null && ( git clean -fd && git reset --hard )
 
     # Show unpushed/ahead changes
     ahead = !GIT_CURRENT_BRANCH=$(git branch | grep \\* | awk '{print $2}') && git log origin/$GIT_CURRENT_BRANCH..$GIT_CURRENT_BRANCH --oneline
@@ -137,6 +139,16 @@
     # config
     conf = config
     lconf = config --local
+
+    # clean git repo
+    current = !set -x && git pull && git fetch -p && git remote prune origin
+    latest = !set -x && git pull && git fetch -p && git remote prune origin
+
+    # map typos
+    remove = !echo 'WARNING: "git remove" does not exist, continuing under the assumption that you meant "git remote"!' && set -x && git remote
+
+    # list tags version sorted
+    tags = "!f() { git tag | sort --version-sort; }; f"
 
     # Switch to a branch, creating it if necessary
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"

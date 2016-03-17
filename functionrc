@@ -32,6 +32,11 @@ function x {
   $@
 }
 
+# Show size of directory
+function dume {
+  du -h --max-depth=0 $1
+}
+
 # Keep zshrc prompt from hanging when ruby isn't installed
 if [[ "$(which ruby)" = "ruby not found" ]]; then
   function ruby() {
@@ -41,9 +46,13 @@ fi
 
 # Keep zshrc prompt from hanging when node isn't installed
 if [[ "$(which node)" = "node not found" ]]; then
-  function node() {
-    echo "n/a"
-  }
+  if [[ "$(which nodejs)" = "nodejs not found" ]]; then
+    function node() {
+      echo "n/a"
+    }
+  else
+    alias node="$(which nodejs)"
+  fi
 fi
 
 #
@@ -326,6 +335,7 @@ function gitignore {
 }
 
 function git_clean {
+  echo "DEPRICATED: use 'git latest'"
   x git pull
   x git fetch -p
   x git remote prune origin
@@ -559,6 +569,26 @@ if test "$(which docker 2> /dev/null)"; then
     }
 fi
 
+function docker_clean {
+  echo "+ clean containers"
+  docker ps -a | grep -v 'NAMES' | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
+
+  echo "+ clean images"
+  docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
+}
+
+function docker_killall {
+  echo "+ killing all containers"
+  docker ps | awk '{print $NF}' | grep -v 'NAMES' | xargs docker kill
+}
+
+function docker_stopall {
+  echo "+ stopping all containers"
+  docker ps | awk '{print $NF}' | grep -v 'NAMES' | xargs docker stop
+}
+
+docker_exec="$(which docker)"
+
 #############################################################
 # Function -- Boot2Docker
 #############################################################
@@ -604,14 +634,6 @@ if test "$(which boot2docker 2> /dev/null)"; then
       return 0
     }
 
-    function docker_clean {
-      echo "+ clean containers"
-      docker ps -a | grep -v 'NAMES' | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
-
-      echo "+ clean images"
-      docker images | grep '^<none>' | awk '{ print $3 }' | xargs docker rmi
-    }
-
     function b2d {
       case "$@" in
       reload)
@@ -633,7 +655,6 @@ if test "$(which boot2docker 2> /dev/null)"; then
       boot2docker $@
     }
 
-    docker_exec="$(which docker)"
     function docker {
       case "$@" in
       reload)
@@ -651,12 +672,34 @@ if test "$(which boot2docker 2> /dev/null)"; then
       clean)
         docker_clean
         return $?;;
+      stopall)
+        docker_stopall
+        return $?;;
+      killall)
+        docker_killall
+        return $?;;
       esac
       $docker_exec $@
     }
 
     puts "+ initialized boot2docker/docker functions"
     puts "+   usage: b2d|docker [up|down|reup|clean|reset]"
+else
+    function docker {
+      case "$@" in
+      clean)
+        docker_clean
+        return 0;;
+      stopall)
+        docker_stopall
+        return $?;;
+      killall)
+        docker_killall
+        return $?;;
+      esac
+      $docker_exec $@
+    }
+
 fi
 
 # tmate
@@ -715,9 +758,9 @@ function godev() {
   local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*" | xargs | awk '{print $1}')"
 
   if [[ -z $_found ]]; then
+    cd "$devpath"
     echo "Could not find a directory name containing \"$1\" in:"
     echo "$(ls -lF | grep '^d' | awk '{print $NF}' |sed 's/\///' | xargs)"
-    cd "$devpath"
     return 1
   fi
 
@@ -755,6 +798,14 @@ function gogo(){
     fi
 
     cd "$_path"
+}
+
+function gogit {
+  local substr="$(echo $1 | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')"
+  if ! godev $substr; then
+    x git clone $1
+    godev $substr
+  fi
 }
 
 ## Noop Server - Clean http listener
