@@ -105,6 +105,12 @@ alias gba="git branch -v -a"
 alias gg="git grep"
 alias gprune="git pull --all && git branch --merged develop | grep -v 'master$\|develop$' | xargs git branch -d"
 
+alias g=git
+alias get=git
+alias gti=git
+alias got=git
+
+
 # tig aliases
 alias tstatus="tig status"
 alias tst="tig status"

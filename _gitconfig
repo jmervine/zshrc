@@ -1,5 +1,6 @@
 [core]
   editor = vim
+  autocrlf = input
 
 [user]
     name = Josh Mervine
@@ -142,7 +143,7 @@
 
     # clean git repo
     current = !set -x && git pull && git fetch -p && git remote prune origin
-    latest = !set -x && git pull && git fetch -p && git remote prune origin
+    latest = !set -x && git pull && git fetch -p && git fetch --tags && git remote prune origin
 
     # map typos
     remove = !echo 'WARNING: "git remove" does not exist, continuing under the assumption that you meant "git remote"!' && set -x && git remote

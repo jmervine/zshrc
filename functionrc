@@ -440,29 +440,29 @@ puts "+ -type g :: google search"
 #############################################################
 # Function -- myip
 #############################################################
-function myip {
-    # When IP isn't found, use hostname.
-    # This will pretty much always break though.
-    if [[ "$(uname)" = "Darwin" ]]; then
-        for en in en2 en1 en0; do
-            ipaddr=$(ifconfig $en | grep "inet " | awk '{ print $2 }')
-            if test "$ipaddr"; then
-              echo $ipaddr
-              return 0
-            fi
-        done
-    else
-        for eth in eth2 eth1 eth0; do
-            ipaddr=$(ifconfig $eth | grep "inet " | awk '{ print $2 }')
-            if test "$ipaddr"; then
-                echo $ipaddr
-                return 0
-            fi
-        done
-    fi
-    echo "$(hostname)"
-}
-puts "+ initialized myip function"
+# function myip {
+#     # When IP isn't found, use hostname.
+#     # This will pretty much always break though.
+#     if [[ "$(uname)" = "Darwin" ]]; then
+#         for en in en2 en1 en0; do
+#             ipaddr=$(ifconfig $en | grep "inet " | awk '{ print $2 }')
+#             if test "$ipaddr"; then
+#               echo $ipaddr
+#               return 0
+#             fi
+#         done
+#     else
+#         for eth in eth2 eth1 eth0; do
+#             ipaddr=$(ifconfig $eth | grep "inet " | awk '{ print $2 }')
+#             if test "$ipaddr"; then
+#                 echo $ipaddr
+#                 return 0
+#             fi
+#         done
+#     fi
+#     echo "$(hostname)"
+# }
+# puts "+ initialized myip function"
 
 #############################################################
 # Function -- PSSH wrapper
@@ -755,7 +755,13 @@ function godev() {
     return
   fi
 
-  local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*" | xargs | awk '{print $1}')"
+  # explicit search
+  local _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "$1" | xargs | awk '{print $1}')"
+
+  if [[ -z $_found ]]; then
+    # wildcard search
+    _found="$(/usr/bin/find "${devpath}" -maxdepth 1 -type d -iname "*$1*" | xargs | awk '{print $1}')"
+  fi
 
   if [[ -z $_found ]]; then
     cd "$devpath"
