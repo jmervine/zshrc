@@ -866,4 +866,28 @@ function icdep {
   return $?
 }
 
+# run Procfiles without fore{man,go}
+function _procline {
+  local line=""
+  if test -z "$1"; then
+    line=`cat Procfile | head -n1 | awk -F': ' '{ print $2 }'`
+  else
+    line=`cat Procfile | grep $1 | awk -F': ' '{ print $2 }'`
+  fi
+
+  echo $line
+}
+function prun {
+  local line=`_procline $@`
+  echo "+ $line"
+  bash -c $line
+}
+
+function berun {
+  local line=`_procline $@`
+
+  echo "+ bundle exec $line"
+  bash -c "bundle exec $line"
+}
+
 # vim: ft=sh:

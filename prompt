@@ -2,11 +2,11 @@
 # Prompt
 ###############################################################
 function git_branch_string {
-    stat=`git status`
+    stat=`git status 2> /dev/null`
     if test "$(echo $stat | grep "^# On branch")"; then
-      echo "`git status | grep "^# On branch .*$" | cut -d " " -f 4`"
+      echo "$(echo $stat | grep "^# On branch .*$" | cut -d " " -f 4)"
     else
-      echo "`git status | grep "^On branch .*$" | cut -d " " -f 3`"
+      echo "$(echo $stat | grep "^On branch .*$" | cut -d " " -f 3)"
     fi
 }
 
@@ -26,9 +26,9 @@ function git_branch {
       branch_pattern="^# On branch (.*)$"
     fi
 
-    remote_pattern="# Your branch is (.*) of"
-    diverge_pattern="# Your branch and (.*) have diverged"
-    ahead_pattern="^# Your branch is ahead of"
+    remote_pattern="Your branch is (.*) of"
+    diverge_pattern="Your branch and (.*) have diverged"
+    ahead_pattern="Your branch is ahead of"
 
     if [[ ! ${git_status} =~ "working directory clean" ]]; then
         state=" ${RED}⚡"
