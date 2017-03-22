@@ -9,7 +9,8 @@ alias src="exec zsh -l"
 alias bashrc="bash -l"
 alias chbash="exec bash -l"
 
-alias vi=vim
+alias vi="vim -X"
+alias vim="$(which vim) -X"
 
 # print time
 alias t="date +%H:%M"

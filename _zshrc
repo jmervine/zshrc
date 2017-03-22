@@ -4,7 +4,7 @@
 # Inital setup.
 ###############################################################
 #
-export EDITOR=vim
+export EDITOR="vim -X"
 bindkey -v
 bindkey '^R' history-incremental-search-backward
 
