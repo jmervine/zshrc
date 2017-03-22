@@ -4,6 +4,8 @@
 CASE_SENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 setopt bash_autolist
+
+fpath=(~/.zsh/completion $fpath)
 autoload -U compinit && compinit
 zstyle ':completion:*:*:kill:*:processes' command 'ps --forest -e -o pid,user,tty,cmd'
 

@@ -890,4 +890,11 @@ function berun {
   bash -c "bundle exec $line"
 }
 
+function dcex {
+  local cmd="bash"
+  test $1 && cmd=$1
+  echo "+ docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd"
+  docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd
+}
+
 # vim: ft=sh:
