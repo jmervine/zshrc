@@ -32,29 +32,6 @@ function x {
   $@
 }
 
-# Show size of directory
-function dume {
-  du -h --max-depth=0 $1
-}
-
-# Keep zshrc prompt from hanging when ruby isn't installed
-if [[ "$(which ruby)" = "ruby not found" ]]; then
-  function ruby() {
-    echo "n/a"
-  }
-fi
-
-# Keep zshrc prompt from hanging when node isn't installed
-if [[ "$(which node)" = "node not found" ]]; then
-  if [[ "$(which nodejs)" = "nodejs not found" ]]; then
-    function node() {
-      echo "n/a"
-    }
-  else
-    alias node="$(which nodejs)"
-  fi
-fi
-
 #
 # GLOBALS
 ###
@@ -81,235 +58,8 @@ function tm() {
 }
 
 #############################################################
-# VirtualBox Fuctions
-#############################################################
-_vb_cmd="VBoxManage"
-if test "$(which $_vb_cmd 2> /dev/null)"; then
-  function _vb_help {
-    echo "Usage: vb ACTION VM"
-    echo " "
-    echo "Actions"
-    echo "- up|start          start/restart/wake"
-    echo "- pause             pause"
-    echo "- sleep             sleep"
-    echo "- down|stop         graceful shutdown"
-    echo "- kill|halt|off     forceful shutdown"
-    echo "- status|state      minimial status "
-    echo "- info|describe     verbose status "
-    echo "- debug|setup       start with gui for setup or troubleshooting"
-    echo "- ssh               attempt to ssh to guest vbox (fragile)"
-    echo "- forward VM FROM [TO]"
-    echo "                    add port forward"
-    echo "- ports             list forwarded ports"
-    echo "- fix               run network fix"
-    echo "- help              show this message "
-    echo " "
-    echo "VMs"
-    echo "$($_vb_cmd list vms| grep -v boot2docker-vm)"
-    echo " "
-  }
-
-  function _vm_net_fix {
-    local _iface="$(VBoxManage showvminfo $1 --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
-    local _block="$(ifconfig | grep "inet.*\.255" | grep -v ".1.255" | awk '{print $NF}' | sed 's/\.255//')"
-    echo "++ sudo route -n add -net ${_block}.0/24 -interface ${_iface}"
-
-    sudo route -n add -net ${_block}.0/24 -interface ${_iface}
-  }
-
-
-  function vb {
-    if ! test "$(which $_vb_cmd)"; then
-      echo "ERROR: VirtualBox not found"
-      echo " "
-      _vb_help
-      return 1
-    fi
-
-    if [[ "$1" = "" || "$1" = "help" ]]; then
-      _vb_help
-      return 0
-    fi
-
-    local guest=$2
-    # I am setting a default here for myself, you might want to remove this if
-    # you're not me.
-    test "$guest" || guest=Debian
-
-    # Error checking for those that remove the default guest lines above.
-    if ! test "$guest"; then
-      echo "ERROR: VirtualBox VM required"
-      echo " "
-      _vb_help
-      return 1
-    fi
-
-    case $1 in
-    up|start)
-      $_vb_cmd controlvm $guest resume || $_vb_cmd startvm $guest --type headless;;
-    debug|setup)
-      $_vb_cmd startvm $guest --type gui;;
-    down|stop)
-      $_vb_cmd controlvm $guest acpipowerbutton;;
-    pause)
-      $_vb_cmd controlvm $guest pause;;
-    sleep)
-      $_vb_cmd controlvm $guest acpisleepbutton;;
-    kill|halt|off)
-      $_vb_cmd controlvm $guest poweroff;;
-    status|state)
-      $_vb_cmd showvminfo $guest | grep State;;
-    info|describe)
-      $_vb_cmd showvminfo $guest | less;;
-    fix|fuck)
-      _vm_net_fix $guest;;
-    ports)
-      $_vb_cmd showvminfo $guest | grep Rule | awk -F',' '{print $1" "$4}' | awk '{str = sprintf("%-10s %s",$6,$NF); print str}';;
-    forward)
-      local _from=$3
-      local _to=$4
-      if ! test "$_from"; then
-        _vb_help
-        return 1
-      fi
-      test "$_to" || _to=$_from
-      $_vb_cmd modifyvm $guest --natpf1 ",tcp,,$_from,,$_to";;
-    ssh)
-      # Fragile at best
-      #
-      # I setup port forwarding with this to get this working:
-      #
-      # $ VBoxManage modifyvm GuestBox --natpf1 "ssh,tcp,,2222,,22"
-      #
-      # USER=guestuser vb ssh GuestBox
-      #_vm_net_fix $guest
-      test "$USER" || USER=`whoami`
-      ssh $USER@localhost -p $(VBoxManage showvminfo $guest | grep Rule | grep ssh | awk -F',' '{print $4}' | awk -F'=' '{ print $NF}');;
-    *)
-      _vb_help
-    esac
-  }
-  #alias vm=vb
-  puts "+ initialized vb function"
-fi
-
-_pl_cmd="prlctl"
-if test "$(which $_pl_cmd 2> /dev/null)"; then
-  function _pl_help {
-    echo "Usage: pl|vm ACTION VM"
-    echo " "
-    echo "Actions"
-    echo "- list"
-    echo "- start"
-    echo "- resume"
-    echo "- stop"
-    echo "- pause"
-    echo "- kill"
-    echo "- status"
-    echo "- info"
-    echo "- ssh     ssh in to host via shared interface"
-    echo "- enter   enter host as root via Parallels"
-    echo "- addr    show shared ip address"
-    echo "- iface   show shared interface"
-    echo "- help    show this message "
-    echo " "
-    echo "VMs"
-    echo "$($_pl_cmd list)"
-    echo " "
-  }
-
-  function _pl_net_fix {
-    local _iface="$(VBoxManage showvminfo $1 --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
-    local _block="$(ifconfig | grep "inet.*\.255" | grep -v ".1.255" | awk '{print $NF}' | sed 's/\.255//')"
-    echo "++ sudo route -n add -net ${_block}.0/24 -interface ${_iface}"
-
-    sudo route -n add -net ${_block}.0/24 -interface ${_iface}
-  }
-
-  function pl {
-    if ! test "$(which $_pl_cmd)"; then
-      echo "ERROR: VirtualBox not found"
-      echo " "
-      _pl_help
-      return 1
-    fi
-
-    if [[ "$1" = "" || "$1" = "help" ]]; then
-      _pl_help
-      return 0
-    fi
-
-    local guest=$2
-    # I am setting a default here for myself, you might want to remove this if
-    # you're not me.
-    test "$guest" || guest=Debian
-
-    # Error checking for those that remove the default guest lines above.
-    if ! test "$guest"; then
-      echo "ERROR: VirtualBox VM required"
-      echo " "
-      _pl_help
-      return 1
-    fi
-
-    case $1 in
-    list)
-      $_pl_cmd list --all;;
-    start)
-      $_pl_cmd start $guest;;
-    restart)
-      $_pl_cmd restart $guest;;
-    resume)
-      $_pl_cmd resume $guest;;
-    stop)
-      $_pl_cmd stop $guest;;
-    pause)
-      $_pl_cmd pause $guest;;
-    sleep)
-      $_pl_cmd sleep $guest;;
-    kill)
-      $_pl_cmd stop $guest --kill;;
-    status)
-      $_pl_cmd status $guest;;
-    info)
-      $_pl_cmd list -i $guest | less;;
-    iface)
-      $_pl_cmd list -i $guest | grep "shared" | awk '{print $1}' | sed 's/net/eth/';;
-    enter)
-      $_pl_cmd enter $guest;;
-    addr)
-      $_pl_cmd exec $guest ifconfig $(pl iface) | grep 'inet addr' | awk '{print $2}' | awk -F':' '{print $NF}';;
-    hosts)
-      sudo bash -c "echo -e \"`cat /private/etc/hosts | grep -v "$guest\."`\n`pl addr $guest` $guest debian.localhost.com vm.localhost.com debian vm\n\" > /private/etc/hosts"
-      sudo dscacheutil -flushcache;;
-    fix)
-      # only works for linux guests
-      if ! ping -c 1 -t 5 $guest > /dev/null; then
-        $_pl_cmd exec $guest /etc/init.d/networking restart
-      fi;;
-    ping)
-      ping -c 1 $guest;;
-    ssh)
-      if ! ping -c 1 -t 2 $guest > /dev/null; then
-        pl fix $guest
-      fi
-      test "$USER" || USER=`whoami`
-      test "`cat /private/etc/hosts | grep $guest`" || pl hosts $guest
-      ssh $USER@$guest;;
-    *)
-      _pl_help
-    esac
-  }
-  alias vm=pl
-  puts "+ initialized pl function"
-  puts "+    alias: 'vm'"
-  puts "+ Usage: vm ACTION VM"
-fi
-
-#############################################################
 # Encryption Fuctions
 #############################################################
-#
 function decrypt {
         # decrypt if selected
         FILE=$1
@@ -329,16 +79,8 @@ function encrypt {
 #############################################################
 # Function - quickly add strings to root .gitignore
 #############################################################
-#
 function gitignore {
     echo "$1" >> $HOME/.gitignore
-}
-
-function git_clean {
-  echo "DEPRICATED: use 'git latest'"
-  x git pull
-  x git fetch -p
-  x git remote prune origin
 }
 
 function git_clean_force {
@@ -356,7 +98,6 @@ function git_clean_force {
 #############################################################
 # Function - Finding files and directories
 #############################################################
-#
 function ff() {
         find . -type f -name "*$1*"
 }
@@ -368,7 +109,6 @@ function fd() {
 #############################################################
 # SSH Agent Setup
 #############################################################
-#
 SSH_ENV="$HOME/.ssh/environment"
 
 function start_agent {
@@ -402,173 +142,13 @@ function svim() {
   $VIM -f "sudo:$@"
 }
 
-function gvim() {
-  $GVIM -X "$@" &
-}
-
-function gvimdiff() {
-  ${GVIM}diff -X "$@" &
-}
-
 function npm_exec() {
   PATH=$(npm bin):$PATH $@
 }
 
-#############################################################
-# Function -- find wrapper
-#############################################################
-function find {
-    if [ `uname -s` = "Darwin" ]; then
-        browser="open"
-    fi
-    test "$browser" || browser=`which chromium-browser 2> /dev/null`
-    test "$browser" || browser=`which google-chrome 2> /dev/null`
-    test "$browser" || browser=`which firefox 2> /dev/null`
-    query="`echo "$@" | sed -e 's:^[a-z\/\~\.]* ::' -e 's/-type [mg]//' -e 's/-name//'`"
-    if [[ $@ =~ "-type m" ]]; then
-        $browser "http://maps.google.com/?q=$query" 2>&1 > /dev/null &
-    elif [[ $@ =~ "-type g" ]]; then
-        $browser "http://www.google.com/search?q=$query" 2>&1 > /dev/null &
-    else
-        /usr/bin/find $@
-    fi
-}
-puts "+ initialized find function"
-puts "+ -type m :: google maps"
-puts "+ -type g :: google search"
-
-#############################################################
-# Function -- myip
-#############################################################
-# function myip {
-#     # When IP isn't found, use hostname.
-#     # This will pretty much always break though.
-#     if [[ "$(uname)" = "Darwin" ]]; then
-#         for en in en2 en1 en0; do
-#             ipaddr=$(ifconfig $en | grep "inet " | awk '{ print $2 }')
-#             if test "$ipaddr"; then
-#               echo $ipaddr
-#               return 0
-#             fi
-#         done
-#     else
-#         for eth in eth2 eth1 eth0; do
-#             ipaddr=$(ifconfig $eth | grep "inet " | awk '{ print $2 }')
-#             if test "$ipaddr"; then
-#                 echo $ipaddr
-#                 return 0
-#             fi
-#         done
-#     fi
-#     echo "$(hostname)"
-# }
-# puts "+ initialized myip function"
-
-#############################################################
-# Function -- PSSH wrapper
-#############################################################
-if test "$(which pssh 2> /dev/null)"; then
-    pssh_exec=$(/usr/bin/which pssh)
-    # wrapper (via ssh-agent)
-    function pssh() {
-      cmd="$@"
-      if ! test -f hosts; then
-        echo "pssh: 'hosts' file not found"
-        return 1
-      fi
-      $pssh_exec --par=10 --hosts=./hosts -l $USER \
-        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-    }
-
-    function psshi() {
-      cmd="$@"
-      if ! test -f hosts; then
-        echo "pssh: 'hosts' file not found"
-        return 1
-      fi
-      $pssh_exec -i --par=10 --hosts=./hosts -l $USER \
-        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-    }
-
-    # wrapper w/ password request
-    function ppssh() {
-      cmd="$@"
-      if ! test -f hosts; then
-        echo "pssh: 'hosts' file not found"
-        return 1
-      fi
-      $pssh_exec --par=10 --hosts=./hosts -l $USER -A \
-        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-    }
-
-    # pass thru
-    function pssh!() {
-      $pssh_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
-    }
-
-    puts "+ initialized pssh functions"
-    puts "+ - pssh  :: pssh with './hosts'"
-    puts "+ - ppssh :: pssh with './hosts' and password request"
-    puts "+ - pssh! :: pssh pass through"
-else
-    echo "X install pssh with 'pip install pssh'"
-fi
-
-if test "$(which pscp 2> /dev/null)"; then
-    pscp_exec=$(/usr/bin/which  pscp)
-    # wrapper (via ssh-agent)
-    function pscp() {
-      cmd="$@"
-      if ! test -f hosts; then
-        echo "pscp: 'hosts' file not found"
-        return 1
-      fi
-      $pscp_exec --par=10 --hosts=./hosts -l $USER \
-        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-    }
-
-    # wrapper w/ password request
-    function ppscp() {
-      cmd="$@"
-      if ! test -f hosts; then
-        echo "pscp: 'hosts' file not found"
-        return 1
-      fi
-      $pscp_exec --par=10 --hosts=./hosts -l $USER -A \
-        -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no "$@"
-    }
-
-    # pass thru
-    function pscp!() {
-      $pscp_exec -O UserKnownHostsFile=/dev/null -O StrictHostKeyChecking=no $@
-    }
-
-    puts "+ initialized pscp functions"
-    puts "+ - pscp  :: pscp with './hosts'"
-    puts "+ - ppscp :: pscp with './hosts' and password request"
-    puts "+ - pscp! :: pscp pass through"
-fi
-
-#############################################################
-# Function -- Docker Flatten
-#############################################################
-if test "$(which docker 2> /dev/null)"; then
-    function docker_flatten() {
-        echo "got: $@"
-        image_name=$(echo $1 | awk -F':' '{print $1}')
-        image_tag=$(echo $1  | awk -F':' '{print $2}')
-        test "$image_name" || return 1
-        test "$image_tag"  || image_tag="latest"
-
-        docker run --name $image_name $image_name:$image_tag && \
-          (docker export $image_name | docker import - $image_name:${image_tag}_flat) && \
-            docker rm $image_name
-
-        puts "+ initialized docker_flatten function"
-        puts "+   usage: docker_flatten <image>[:<tag>]"
-    }
-fi
-
+###############################################################
+# Docker Helpers
+###############################################################
 function docker_clean {
   echo "+ clean containers"
   docker ps -a | grep -v 'NAMES' | grep -v 'Up ' | awk '{ print $NF }' | xargs docker rm
@@ -589,118 +169,20 @@ function docker_stopall {
 
 docker_exec="$(which docker)"
 
-#############################################################
-# Function -- Boot2Docker
-#############################################################
-if test "$(which boot2docker 2> /dev/null)"; then
-    function docker_shellinit {
-      local _shellinit="$(boot2docker shellinit)"
-      eval "$(echo ${_shellinit})"
-      echo "${_shellinit}" > ~/.boot2dockerrc
-    }
-
-    function docker_reup {
-      echo "+ running vpn fix"
-      docker_down
-
-      echo "+ resetting vbox route"
-
-      local _iface="$(VBoxManage showvminfo boot2docker-vm --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)"
-      echo "++ sudo route -n add -net 192.168.59.0/24 -interface ${_iface}"
-
-      sudo route -n add -net 192.168.59.0/24 -interface ${_iface} && \
-        docker_up
-    }
-
-    function docker_reset {
-      echo "+ clearing docker variables"
-      unset DOCKER_HOST
-      unset DOCKER_CERT_PATH
-      unset DOCKER_TLS_VERIFY
-      docker_shellinit
-    }
-
-    function docker_up {
-      echo "+ starting boot2docker"
-      boot2docker up
-      b2dSTATUS=$?
-      docker_reset
-      return $b2dSTATUS
-    }
-
-    function docker_down {
-      echo "+ stopping boot2docker"
-      boot2docker down
-      return 0
-    }
-
-    function b2d {
-      case "$@" in
-      reload)
-        docker_reset
-        return 0;;
-      reset|fix|reup|fuck)
-        docker_reup
-        return $?;;
-      up)
-        docker_up
-        return $?;;
-      down)
-        docker_down
-        return $?;;
-      clean)
-        docker_clean
-        return $?;;
-      esac
-      boot2docker $@
-    }
-
-    function docker {
-      case "$@" in
-      reload)
-        docker_reset
-        return 0;;
-      reset|fix|reup|fuck)
-        docker_reup
-        return $?;;
-      up)
-        docker_up
-        return $?;;
-      down)
-        docker_down
-        return $?;;
-      clean)
-        docker_clean
-        return $?;;
-      stopall)
-        docker_stopall
-        return $?;;
-      killall)
-        docker_killall
-        return $?;;
-      esac
-      $docker_exec $@
-    }
-
-    puts "+ initialized boot2docker/docker functions"
-    puts "+   usage: b2d|docker [up|down|reup|clean|reset]"
-else
-    function docker {
-      case "$@" in
-      clean)
-        docker_clean
-        return 0;;
-      stopall)
-        docker_stopall
-        return $?;;
-      killall)
-        docker_killall
-        return $?;;
-      esac
-      $docker_exec $@
-    }
-
-fi
+function docker {
+  case "$@" in
+  clean)
+    docker_clean
+    return 0;;
+  stopall)
+    docker_stopall
+    return $?;;
+  killall)
+    docker_killall
+    return $?;;
+  esac
+  $docker_exec $@
+}
 
 # tmate
 function tmate {
@@ -825,6 +307,14 @@ function listen {
   x docker run --rm -it -p "$port:$port" -e PORT=$port -e ADDR=$addr jmervine/noop-server
 }
 
+## Run Server to serve files from a local directory
+function serve {
+  local port="$1"
+  [[ -z $port ]] && port=3000
+
+  x docker run -it --rm -p ${port}:80 -v $(pwd):/usr/share/nginx/html nginx:alpine
+}
+
 ## fix up docker generated files
 function own {
   local _path="$1"
@@ -838,63 +328,10 @@ function shopt {
   bash -lc "shopt $@"
 }
 
-function icdep {
-# usages for full deploy:
-# $ icdep clone watchtower-tng 1.0.0
-# $ icdep pull watchtower-tng 1.0.0
-# $ icdep deploy watchtower-tng 1.0.0
-
-  local action=$1
-  local app=$2
-  local tag=$3
-  local user=$4
-  local usage="icdep ACTION APP TAG|BRANCH [USER]"
-
-  if [ -z $action ] || [ -z $app ] || [ -z $tag ]; then
-    echo $usage
-    return 1
-  fi
-
-  [[ -z $user ]] && user=`whoami`
-
-  if [ "$action" = "clone" ]; then
-    ion-client run -a deploymaster bin/$action -c $app -b $tag
-    return $?
-  fi
-
-  ion-client run -a deploymaster bin/$action -c $app -b $tag -u $user
-  return $?
-}
-
-# run Procfiles without fore{man,go}
-function _procline {
-  local line=""
-  if test -z "$1"; then
-    line=`cat Procfile | head -n1 | awk -F': ' '{ print $2 }'`
-  else
-    line=`cat Procfile | grep $1 | awk -F': ' '{ print $2 }'`
-  fi
-
-  echo $line
-}
-function prun {
-  local line=`_procline $@`
-  echo "+ $line"
-  bash -c $line
-}
-
-function berun {
-  local line=`_procline $@`
-
-  echo "+ bundle exec $line"
-  bash -c "bundle exec $line"
-}
-
 function dcex {
   local cmd="bash"
   test $1 && cmd=$1
   echo "+ docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd"
   docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd
 }
-
 # vim: ft=sh:

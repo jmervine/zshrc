@@ -9,8 +9,11 @@ alias src="exec zsh -l"
 alias bashrc="bash -l"
 alias chbash="exec bash -l"
 
-alias vi="vim -X"
-alias vim="$(which vim) -X"
+alias vi="vim"
+alias vim="$(which vim)"
+
+alias vix="vim -X"
+alias vimx="$(which vim) -X"
 
 # print time
 alias t="date +%H:%M"
@@ -83,34 +86,10 @@ if test "$(which ack-grep 2> /dev/null)"; then
 fi
 
 # git aliases
-alias gco="git checkout"
-alias gpush="git push"
-alias gup="git push"
-alias gpull="git pull"
-alias gpu="git pull"
-alias gmerge="git merge"
-alias gstash="git stash"
-alias gstatus="git status"
-alias gst="git status"
-alias gdiff="git diff | vidiff -"
-alias gd="git diff | vidiff -"
-alias gcp="git cp"
-alias gmv="git mv"
-alias grm="git rm"
-alias gblame="git blame"
-alias gbl="git blame"
-alias gshow="git show"
-alias gsh="git show"
-alias gbr="git branch -v"
-alias gba="git branch -v -a"
-alias gg="git grep"
-alias gprune="git pull --all && git branch --merged develop | grep -v 'master$\|develop$' | xargs git branch -d"
-
 alias g=git
 alias get=git
 alias gti=git
 alias got=git
-
 
 # tig aliases
 alias tstatus="tig status"
@@ -123,12 +102,6 @@ alias bye="sudo shutdown -h now"
 
 # dir trav
 alias ..='cd ..'
-
-# github
-alias gh="if [ \`uname -s\` = \"Darwin\" ]; then browser=\"open\"; else browser=\"xdg-open\"; fi; $browser \`git remote -v | grep git@github.com | grep fetch | head -1 | cut -f2 | cut -d' ' -f1 | sed -e's/:/\//' -e 's/git@/http:\/\//'\`"
-
-# docker > sudo
-#alias docker="sudo docker"
 
 # thefuck -> fuck
 alias fuck='eval $(thefuck $(fc -ln -1))'

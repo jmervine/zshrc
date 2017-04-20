@@ -1,5 +1,5 @@
 [core]
-  editor = vim
+  editor = "vim -X"
   autocrlf = input
 
 [user]
@@ -142,8 +142,8 @@
     lconf = config --local
 
     # clean git repo
-    current = !set -x && git pull && git fetch -p && git remote prune origin
-    latest = !set -x && git pull && git fetch -p && git fetch --tags && git remote prune origin
+    current = !set -x && git pull && git fetch -p && git remote prune origin && git dm
+    latest = !set -x && git pull && git fetch -p && git fetch --tags && git remote prune origin && git dm
 
     # map typos
     remove = !echo 'WARNING: "git remove" does not exist, continuing under the assumption that you meant "git remote"!' && set -x && git remote
@@ -168,7 +168,7 @@
 
     # Remove branches that have already been merged with master
     # a.k.a. ‘delete merged’
-    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    dm = "!git branch --merged | grep -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
 
     # View the current working tree status using the short format
     s = status -s
