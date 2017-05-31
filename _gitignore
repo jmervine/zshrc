@@ -62,7 +62,7 @@ tmp
 .serverauth.*
 .zsh_history
 selenium-server-standalone-2.2.0.jar
-vendor
+!/vendor/cache
 *.gem
 .bundler
 .netrwhist

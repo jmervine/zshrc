@@ -185,6 +185,14 @@
     # Clone a repository including all submodules
     c = clone --recursive
 
+    # Temp ignore
+    temp-ignore = update-index --assume-unchanged
+    ti = update-index --assume-unchanged
+
+    # Temp ignore
+    unignore = update-index --no-assume-unchanged
+    uti = update-index --no-assume-unchanged
+
 [format]
     pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
 
