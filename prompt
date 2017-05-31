@@ -29,6 +29,7 @@ function git_branch {
     remote_pattern="Your branch is (.*) of"
     diverge_pattern="Your branch and (.*) have diverged"
     ahead_pattern="Your branch is ahead of"
+    mod_pattern="modified:"
 
     if [[ ! ${git_status} =~ "working directory clean" ]]; then
         state=" ${RED}⚡"
@@ -46,26 +47,14 @@ function git_branch {
         remote=" ${YELLOW}↕"
     fi
 
+    if [[ ${git_status} =~ ${mod_pattern} ]]; then
+        remote=" ${emoji[tractor]}"
+    fi
+
     if [[ ${git_status} =~ ${branch_pattern} ]]; then
         branch="`git_branch_string`"
         echo " ${branch}${remote}${state}"
     fi
-}
-
-function ruby_version {
-    #trying things without this now, as I pretty much only use ruby via docker
-    echo ''
-    #if test -f Gemfile || test "$(find . -maxdepth 1 -type f -name "*.rb")"; then
-        #echo "| %{$fg[red]%}`ruby -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
-    #fi
-}
-
-function node_version {
-    #trying things without this now, as I pretty much only use node via docker
-    echo ''
-    #if test -f package.json || test "$(find . -maxdepth 1 -type f -name "*.js")"; then
-        #echo "| %{$fg[green]%}`node -v | cut -d " " -f 2`%{$reset_color%} " 2>/dev/null
-    #fi
 }
 
 # _phc is something I use personally, external to git
@@ -73,20 +62,6 @@ function node_version {
 function _phc {
     echo ''
 }
-
-# if test "$( zsh --version | awk '{print $2}' | awk -F'.' ' ( $1 > 4 || ( $1 == 4 && $2 > 3 ) || ( $1 == 4 && $2 == 3 && $3 >= 17 ) ) ' )"
-# then
-#     function zle-line-init zle-keymap-select {
-#         local old_ps1="$(echo $PS1 | sed -e 's@\$ $@@')"
-#         if [ "`uname`" = "Darwin" ]; then
-#           old_ps1="`echo ${PS1:0:-2}`"
-#         fi
-#         PS1="$old_ps1${${KEYMAP/vicmd/:}/(main|viins)/$} "
-#         zle reset-prompt
-#     }
-#     zle -N zle-line-init
-#     zle -N zle-keymap-select
-# fi
 
 function precmd() {
     local p_git_branch="`git_branch`"
@@ -96,7 +71,7 @@ function precmd() {
     else
       local p_git_branch=" %T "
     fi
-    #local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+
     local return_code="%(?..%{$fg[red]%}%? ${emoji[no_entry]}%{$reset_color%})"
 
     test "$PS_SIGN" || export PS_SIGN="[I] "
@@ -111,7 +86,7 @@ function precmd() {
     fi
 
     PS1="${os_type} %{$fg[blue]%}%~%{$reset_color%} ${emoji[white_right_pointing_backhand_index]}  "
-    RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [${p_git_branch}`_phc``ruby_version``node_version`]"
+    RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [${p_git_branch}`_phc`]"
 }
 
 autoload -U colors && colors
