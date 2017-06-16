@@ -85,6 +85,10 @@ if test "$(which ack-grep 2> /dev/null)"; then
   alias ack="ack-grep"
 fi
 
+# json to yaml
+alias j2y="ruby -ryaml -rjson -e 'puts YAML.dump(JSON.parse(STDIN.read))'"
+alias json2yaml="ruby -ryaml -rjson -e 'puts YAML.dump(JSON.parse(STDIN.read))'"
+
 # git aliases
 alias g=git
 alias get=git
