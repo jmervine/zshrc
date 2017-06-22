@@ -334,4 +334,11 @@ function dcex {
   echo "+ docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd"
   docker exec -it $(docker ps | grep $(basename $(pwd))_web | awk '{ print $(NF) }') $cmd
 }
+
+function rr {
+  local v=$1
+  [[ -z $v ]] && v=latest
+
+  docker run -it --rm -v $(pwd):/src jmervine/herokudev-ruby:$v
+}
 # vim: ft=sh:
