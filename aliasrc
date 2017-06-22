@@ -6,6 +6,8 @@
 alias zshrc="exec zsh -l"
 alias src="exec zsh -l"
 
+alias watch="watch "
+
 alias bashrc="bash -l"
 alias chbash="exec bash -l"
 
