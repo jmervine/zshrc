@@ -187,7 +187,7 @@ function docker {
 # tmate
 function tmate {
   local _sock=/tmp/tmate.sock
-  local _tmate=/usr/local/bin/tmate
+  local _tmate=/usr/bin/tmate
 
   if [ -z "$@" ]; then
     $_tmate -S $_sock
