@@ -52,10 +52,11 @@ setopt AUTO_PUSHD
 ###############################################################
 # - to add local customizations, create '~/.localrc' and
 #   add changes to it
-[[ -e ~/.localrc ]] && . ~/.localrc # run first
-# vim: ft=sh:
+_include ${HOME}/.localrc
 
 export PATH="${HOME}/.local/bin:${PATH}"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:${PATH}"
+
+# vim: ft=sh:
