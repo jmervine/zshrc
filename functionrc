@@ -341,4 +341,9 @@ function rr {
 
   docker run -it --rm -v $(pwd):/src jmervine/herokudev-ruby:$v
 }
+
+function blockip {
+  echo "+ sudo iptables -I INPUT -s $1.0.0.0/255.0.0.0 -j DROP"
+  sudo iptables -I INPUT -s $1.0.0.0/255.0.0.0 -j DROP
+}
 # vim: ft=sh:

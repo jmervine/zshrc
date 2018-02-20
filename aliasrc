@@ -130,6 +130,9 @@ alias dcrm="docker-compose run --rm --service-ports"
 alias Go="cd $(go env GOPATH)/src/github.com/jmervine/"
 alias Goh="cd $(go env GOPATH)/src/github.com/heroku/"
 
+# terraform
+alias tf=terraform
+
 # hub
 #which hub > /dev/null && eval "$(hub alias -s)"
 
