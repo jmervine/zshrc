@@ -31,7 +31,7 @@ function git_branch {
     ahead_pattern="Your branch is ahead of"
     mod_pattern="modified:"
 
-    if [[ ! ${git_status} =~ "working directory clean" ]]; then
+    if [[ ! ${git_status} =~ "working tree clean" ]]; then
         state=" ${RED}⚡"
     fi
 
