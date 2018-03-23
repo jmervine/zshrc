@@ -85,6 +85,7 @@ function precmd() {
     #   os_type="%{$fg[yellow]%}[%n@%m]"
     # fi
     os_type="%{$fg[yellow]%}[%n@%m]"
+    [[ whoami == "root" ]] && os_type="%{$fg[red]%}[%n@%m]"
 
     PS1="${os_type} %{$fg[blue]%}%~%{$reset_color%} $ "
     RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [${p_git_branch}`_phc`]"
