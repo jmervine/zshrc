@@ -210,6 +210,3 @@
 
 [help]
     autocorrect = 0
-
-[url "git@github.com:"]
-	insteadOf = https://github.com/

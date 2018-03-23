@@ -1,5 +1,10 @@
 [[ -z "$TMUX" ]] && echo "New zsh session:"
 
+# required, avoid errors if missing
+mkdir -p ~/.ssh
+touch ~/.ssh/known_hosts
+touch ~/.ssh/environments
+
 ###############################################################
 # Inital setup.
 ###############################################################
