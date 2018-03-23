@@ -84,7 +84,7 @@ function precmd() {
     # else
     #   os_type="%{$fg[yellow]%}[%n@%m]"
     # fi
-    os_type="%{$fg[yellow]%}[%n@%m]"
+    os_type="%{$fg[green]%}[%n@%m]"
     whoami | grep root > /dev/null && os_type="%{$fg[red]%}[%n@%m]"
 
     PS1="${os_type} %{$fg[blue]%}%~%{$reset_color%} $ "
