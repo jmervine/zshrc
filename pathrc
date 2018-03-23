@@ -35,4 +35,8 @@ if test -e /usr/local/git; then
   export PATH=/usr/local/git/bin:$PATH
 fi
 
+if test -e $HOME/.rbenv/bin; then
+  export PATH=$HOME/.rbenv/bin:$PATH
+fi
+
 # vim: ft=sh:
