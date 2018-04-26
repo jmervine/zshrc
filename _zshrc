@@ -29,10 +29,6 @@ _include ${DOTFILES}/completion/general.sh
 _include ${DOTFILES}/functionrc
 _include ${DOTFILES}/**/*.plugin.zsh
 
-# For hosts using boot2docker
-# - needs to be manually
-_include ${HOME}/.boot2dockerrc
-
 ###############################################################
 # History
 ###############################################################
