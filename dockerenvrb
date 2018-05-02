@@ -1,0 +1,70 @@
+# denv
+#
+# Kind of, sort of, like a 'rbenv' replacement that uses docker and works with
+# other languages as well. It opens a bash prompt in a container with the version
+# requested, and the file from the current directory mounted inside.
+#
+# Some examples
+#
+# $ denv ruby 1.9.3
+# ...
+#
+# $ denv ruby
+# root@hostname:/src#
+#
+# $ hrb
+# root@hostname:/src#
+#
+# !! WARNING !!
+#
+# This runs docker with --network=host flag. You should understand what that
+# means before using this.
+
+function denv_pull {
+  local lang=$1
+  local ver=$2
+  docker pull $lang:$ver
+}
+
+function denv {
+  local lang=$1
+  local ver=$2
+  local cmd=$3
+  test -z $ver && ver="latest"
+  docker pull $lang:$ver && \
+    docker run --rm -it -w /src -v $(pwd):/src --network=host \
+      $lang:$ver bash
+}
+
+function hdenv {
+  denv jmervine/herokudev-$1 $2
+}
+
+alias de=denv
+alias hde=hdenv
+
+# ruby
+alias denvrb="denv ruby $1"
+alias hdenvrb="hdenv ruby $1"
+alias derb="denv ruby $1"
+alias hderb="hdenv ruby $1"
+alias drb=derb
+alias hrb=derb
+
+# python
+alias denvpy="denv python $1"
+alias hdenvpy="hdenv python $1"
+alias depy="denv python $1"
+alias hdepy="hdenv python $1"
+alias dpy=depy
+alias hpy=hdepy
+
+# node.js
+alias denvjs="denv node $1"
+alias hdenvjs="hdenv node $1"
+alias dejs="denv node $1"
+alias hdejs="hdenv node $1"
+alias djs=dejs
+alias hjs=hdejs
+
+# vim: ft=sh

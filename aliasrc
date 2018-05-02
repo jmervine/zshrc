@@ -125,6 +125,7 @@ alias dcu="docker-compose up"
 alias dcb="docker-compose build"
 alias dcr="docker-compose run --service-ports"
 alias dcrm="docker-compose run --rm --service-ports"
+alias dcweb="dcrm web bash && dc stop"
 
 # go random
 alias Go="cd $(go env GOPATH)/src/github.com/jmervine/"

@@ -9,7 +9,7 @@ touch ~/.ssh/environments
 # Inital setup.
 ###############################################################
 #
-export EDITOR="vim -X"
+export EDITOR="vim"
 bindkey -v
 bindkey '^R' history-incremental-search-backward
 
@@ -29,9 +29,7 @@ _include ${DOTFILES}/completion/general.sh
 _include ${DOTFILES}/functionrc
 _include ${DOTFILES}/**/*.plugin.zsh
 
-# For hosts using boot2docker
-# - needs to be manually
-_include ${HOME}/.boot2dockerrc
+test -e $(which docker) && _include ${DOTFILES}/dockerenvrc
 
 ###############################################################
 # History
@@ -60,6 +58,7 @@ setopt AUTO_PUSHD
 _include ${HOME}/.localrc
 
 export PATH="${HOME}/.local/bin:${PATH}"
+export PATH="/snap/bin:${PATH}"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:${PATH}"

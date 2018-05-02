@@ -23,10 +23,7 @@ if [[ "$(echo $0)" = "bash" ]]; then
     _include ${DOTFILES}/pathrc
     _include ${DOTFILES}/aliasrc
     _include ${DOTFILES}/functionrc
-
-    # For hosts using boot2docker
-    # - needs to be manually
-    _include ${HOME}/.boot2dockerrc
+    test -e $(which docker) && _include ${DOTFILES}/dockerenvrc
 
     ###############################################################
     # 'localrc' -- should be last!
