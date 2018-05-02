@@ -44,26 +44,26 @@ alias de=denv
 alias hde=hdenv
 
 # ruby
-alias denvrb="denv ruby $1"
-alias hdenvrb="hdenv ruby $1"
-alias derb="denv ruby $1"
-alias hderb="hdenv ruby $1"
+alias denvrb="denv ruby"
+alias hdenvrb="hdenv ruby"
+alias derb="denv ruby"
+alias hderb="hdenv ruby"
 alias drb=derb
 alias hrb=derb
 
 # python
-alias denvpy="denv python $1"
-alias hdenvpy="hdenv python $1"
-alias depy="denv python $1"
-alias hdepy="hdenv python $1"
+alias denvpy="denv python"
+alias hdenvpy="hdenv python"
+alias depy="denv python"
+alias hdepy="hdenv python"
 alias dpy=depy
 alias hpy=hdepy
 
 # node.js
-alias denvjs="denv node $1"
-alias hdenvjs="hdenv node $1"
-alias dejs="denv node $1"
-alias hdejs="hdenv node $1"
+alias denvjs="denv node"
+alias hdenvjs="hdenv node"
+alias dejs="denv node"
+alias hdejs="hdenv node"
 alias djs=dejs
 alias hjs=hdejs
 
