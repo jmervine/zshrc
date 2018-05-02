@@ -13,7 +13,10 @@
 # root@hostname:/src#
 #
 # $ hrb
-# root@hostname:/src#
+# root@hostname:/src# bundle install --path .bundle
+# ... output
+# root@hostname:/src# bundle exec rake test
+# ... output
 #
 # !! WARNING !!
 #
