@@ -19,6 +19,7 @@ bindkey '^R' history-incremental-search-backward
 #
 test "$DOTFILES" || DOTFILES=~/.dotfiles
 function _include() {
+  echo "inc: $1"
   [[ -e $1 ]] && . $1
 }
 
