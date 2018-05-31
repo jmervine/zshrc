@@ -137,6 +137,7 @@ alias tf=terraform
 # k8s
 alias kc=kubectl
 alias ks=kubespace
+alias mk=minikube
 
 # hub
 #which hub > /dev/null && eval "$(hub alias -s)"
