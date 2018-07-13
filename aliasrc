@@ -138,6 +138,7 @@ alias tf=terraform
 alias kc=kubectl
 alias ks=kubespace
 alias mk=minikube
+alias eks='kubectl --kubeconfig ~/.kube/eks.conf'
 
 # hub
 #which hub > /dev/null && eval "$(hub alias -s)"

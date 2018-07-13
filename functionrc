@@ -346,4 +346,52 @@ function blockip {
   echo "+ sudo iptables -I INPUT -s $1.0.0.0/255.0.0.0 -j DROP"
   sudo iptables -I INPUT -s $1.0.0.0/255.0.0.0 -j DROP
 }
+
+## AWS Creds from ~/.aws/credentials via profile
+function _get_aws_creds {
+  if test -z $1; then
+    echo "configuration name required"
+    exit 1
+  fi
+  grep -A3 "^\[$1\]" $HOME/.aws/credentials
+}
+
+function _get_aws_region {
+  echo -n $1 | grep "^region =" | awk '{ print $NF }'
+}
+
+function _get_aws_access_key {
+  echo -n $1 | grep "^aws_access_key_id =" | awk '{ print $NF }'
+}
+
+function _get_aws_secret_key {
+  echo -n $1 | grep "^aws_secret_access_key =" | awk '{ print $NF }'
+}
+
+# usage: aws_creds <profile> [silence]
+function aws_creds {
+  local profile=$1
+  local verbose=$2 # Set to anything to slience output.
+  local creds=$(_get_aws_creds $profile)
+  local region=$(_get_aws_region $creds)
+  local key=$(_get_aws_access_key $creds)
+  local secret=$(_get_aws_secret_key $creds)
+
+  test ! -z $verbose || echo "Setting AWS Creds from '${profile}' profile."
+  if ! test -z $region; then
+    export AWS_DEFAULT_REGION="$region"
+    test ! -z $verbose || echo "- set AWS_DEFAULT_REGION=$region"
+  fi
+
+  if ! test -z $key; then
+    export AWS_ACCESS_KEY_ID="$key"
+    test ! -z $verbose || echo "- set AWS_ACCESS_KEY_ID=<${profile} aws_acces_key_id>"
+  fi
+
+  if ! test -z $secret; then
+    export AWS_SECRET_ACCESS_KEY="$secret"
+    test ! -z $verbose || echo "- set AWS_SECRET_ACCESS_KEY=<${profile} aws_secret_access_key>"
+  fi
+}
+
 # vim: ft=sh:
