@@ -348,28 +348,13 @@ function blockip {
 }
 
 ## AWS Creds from ~/.aws/credentials via profile
-function _get_aws_creds {
-  if test -z $1; then
-    echo "configuration name required"
-    exit 1
-  fi
-  grep -A3 "^\[$1\]" $HOME/.aws/credentials
-}
-
-function _get_aws_value {
-  local key=$1
-  local creds=$2
-  echo -n $creds | grep "^${key} =" | awk '{ print $NF }'
-}
-
 # usage: aws_creds <profile> [silence]
 function aws_creds {
   local profile=$1
   local verbose=$2 # Set to anything to slience output.
-  local creds=$(_get_aws_creds $profile)
-  local region=$(_get_aws_value "region" $creds)
-  local key=$(_get_aws_value "aws_access_key_id" $creds)
-  local secret=$(_get_aws_value "aws_secret_access_key" $creds)
+  local region=$(aws --profile "${profile}" configure get region)
+  local key=$(aws --profile "${profile}" configure get aws_access_key_id)
+  local secret=$(aws --profile "${profile}" configure get aws_secret_access_key)
 
   test ! -z $verbose || echo "Setting AWS Creds from '${profile}' profile."
   if ! test -z $region; then
