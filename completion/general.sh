@@ -19,3 +19,8 @@ autoload -U zmv
 if test -f ~/.dotfiles/.git-completion.zsh; then
   zstyle ':completion:*:*:git:*' script ~/.dotfiles/.git-completion.zsh
 fi
+
+# kubectl
+if [ $commands[kubectl] ]; then
+  source <(kubectl completion zsh)
+fi

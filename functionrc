@@ -396,7 +396,7 @@ function vault_unseal {
   echo "Unsealing: $env => $VAULT_ADDR"
   test -z $VAULT_ADDR && return 1
   # Randomize and grab three.
-  for k in $(cat $HOME/.vault_keys/${env}.keys | sort -R | head -n3 | xargs); do
+  for k in $(cat $HOME/.vault_keys/${env}.keys | sort -R | head -n5 | xargs); do
     echo "+ vault operator unseal **** &>/dev/null"
     vault operator unseal $k &>/dev/null
   done
