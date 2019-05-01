@@ -92,3 +92,6 @@ oradiag_root
 .xsession-errors
 
 .aws_creds.yml
+
+.terraform
+.bundle

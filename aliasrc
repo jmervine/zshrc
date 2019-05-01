@@ -140,6 +140,10 @@ alias ks=kubespace
 alias mk=minikube
 alias eks='kubectl --kubeconfig ~/.kube/eks.conf'
 
+# make -B
+alias makef="make -B"
+alias fmake="make -B"
+
 # hub
 #which hub > /dev/null && eval "$(hub alias -s)"
 

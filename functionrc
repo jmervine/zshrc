@@ -375,6 +375,47 @@ function aws_creds {
   fi
 }
 
+
+## AWS SecretsManager
+function awssm {
+  local jq=$(which jq)
+  local action=$1
+  local key=$2
+  local region=$3
+  local _key_ref="--secret-id='$key'"
+  local _filter="$jq '.'"
+  local _action
+
+  case "$action" in
+    get)
+      _action=get-secret-value
+      _filter="$jq -r '.SecretString'"
+      ;;
+    create)
+      _action=create-secret
+      _key_ref="--name='$key'"
+      ;;
+    delete|rm|remove)
+      _action=delete-secret
+      ;;
+    list)
+      _action=list-secrets
+      _key_ref=
+      _filter="$jq -r '.SecretList[].Name'"
+      ;;
+  esac
+
+  test -z $region && region=$AWS_REGION
+  test -z $region && region=$AWS_DEFAULT_REGION
+  if ! test -z $region; then
+    region="--region $region"
+  fi
+
+  echo "+ aws $region secretsmanager $_action $_key_ref | $_filter"
+  aws $region secretsmanager $_action $_key_ref
+  echo "$_result"
+}
+
 ## HashiCorp Vault Helpers
 # Assumptions
 # Vault root setup is in '~/.vault_keys/${env}.sh' with base vars exported, e.g.
@@ -407,4 +448,15 @@ function vault_unseal {
 }
 alias vunseal=vault_unseal
 alias unseal=vault_unseal
+
+## Kube Functions
+function kcns {
+  if test -z $1; then
+    kubectl config view | grep "namespace:" | xargs
+    return 0
+  fi
+  echo "kubectl config set-context $(kubectl config current-context) --namespace=$1"
+  kubectl config set-context $(kubectl config current-context) --namespace=$1
+}
+
 # vim: ft=sh:
