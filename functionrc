@@ -76,6 +76,13 @@ function encrypt {
         FILE=""
 }
 
+function securerandom {
+  local n
+  n=$1
+  test -z $n && n=16
+  ruby -rsecurerandom -e "puts SecureRandom.hex($n)"
+}
+
 #############################################################
 # Function - quickly add strings to root .gitignore
 #############################################################
@@ -457,6 +464,21 @@ function kcns {
   fi
   echo "kubectl config set-context $(kubectl config current-context) --namespace=$1"
   kubectl config set-context $(kubectl config current-context) --namespace=$1
+}
+
+# e.g. kkc apply $PATH
+function kkc {
+  echo "+ kustomize build $2 | kubectl $1 -f -"
+  kustomize build $2 | kubectl $1 -f -
+}
+alias kck=kkc
+
+function godocz {
+  echo "+ godoc -play &"
+  godoc -play &
+  echo "+ open http://localhost:6060/"
+  open http://localhost:6060/
+  fg
 }
 
 # vim: ft=sh:

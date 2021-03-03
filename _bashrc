@@ -33,3 +33,6 @@ if [[ "$(echo $0)" = "bash" ]]; then
     [[ -e ~/.localrc ]] && . ~/.localrc # run first
 fi
 # vim: ft=sh:
+
+# added by travis gem
+[ -f /Users/jmervine/.travis/travis.sh ] && source /Users/jmervine/.travis/travis.sh
