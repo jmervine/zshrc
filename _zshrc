@@ -31,7 +31,7 @@ _include ${DOTFILES}/completion/general.sh
 _include ${DOTFILES}/functionrc
 _include ${DOTFILES}/**/*.plugin.zsh
 
-test -e $(which docker) && _include ${DOTFILES}/dockerenvrc
+test -e "$(which docker)" && _include ${DOTFILES}/dockerenvrc
 
 ###############################################################
 # History
