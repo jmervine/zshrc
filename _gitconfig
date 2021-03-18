@@ -4,8 +4,8 @@
   symlinks = true
 
 [user]
-    name = Josh Mervine
-    email = joshua@mervine.net
+	name = Joshua Mervine
+	email = jmervine@users.noreply.github.com
 
 [github]
     user = jmervine

@@ -1,4 +1,5 @@
 test
+Brewfile.lock.json
 
 # just to be safe
 .ssh
