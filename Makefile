@@ -10,7 +10,6 @@ install:
 	make $(HOME)/.gitignore
 	make $(HOME)/.xmodmap
 	make $(HOME)/.tmux.conf
-	make $(HOME)/.i3
 	make thefuck
 
 uninstall:
@@ -21,7 +20,6 @@ uninstall:
 	-test -L $(HOME)/.gitignore && rm -vf $(HOME)/.gitignore
 	-test -L $(HOME)/.xmodmap   && rm -vf $(HOME)/.xmodmap
 	-test -L $(HOME)/.tmux.conf && rm -vf $(HOME)/.tmux.conf
-	-test -L $(HOME)/.i3        && rm -vf $(HOME)/.i3
 
 # Test install target below.
 test:
@@ -57,9 +55,6 @@ $(HOME)/.gitignore:
 
 $(HOME)/.xmodmap:
 	ln -vs $(CWD)/_xmodmap $(HOME)/.xmodmap
-
-$(HOME)/.i3:
-	-test -x "$(shell which i3)" && ln -vs $(CWD)/i3 $(HOME)/.i3
 
 maxcli: $(addprefix $(HOME)/.bin/,$(MAXCLI))
 
