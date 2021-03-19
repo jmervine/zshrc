@@ -4,8 +4,8 @@
   symlinks = true
 
 [user]
-	name = Joshua Mervine
-	email = jmervine@users.noreply.github.com
+    name = Joshua Mervine
+    email = jmervine@salesforce.com
 
 [github]
     user = jmervine
@@ -218,3 +218,5 @@
 	process = git-lfs filter-process
 [init]
 	defaultBranch = master
+[commit]
+	gpgsign = true
