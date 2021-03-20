@@ -14,8 +14,8 @@ alias chbash="exec bash -l"
 alias vi="vim"
 alias vim="$(which vim)"
 
-alias gvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
-alias mvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
+#alias gvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
+#alias mvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
 
 
 # print time
