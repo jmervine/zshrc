@@ -112,6 +112,12 @@ alias heorku=heroku
 alias hero=heroku
 alias h=heroku
 
+# docker
+alias dr="docker"
+alias dps="docker ps"
+alias drps="docker ps"
+alias dkill="docker kill"
+
 # docker-compose
 alias dc=docker-compose
 alias dcu="docker-compose up"
