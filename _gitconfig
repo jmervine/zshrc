@@ -205,20 +205,30 @@
     pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
 
 [diff]
-    # Git diff will use (i)ndex, (w)ork tree, (c)ommit and (o)bject
+    # Git diff will use (i)ndex, (w)ogk tree, (c)ommit and (o)bject
     # instead of a/b/c/d as prefixes for patches
     mnemonicprefix = true
 
 [help]
     autocorrect = 0
+
 [filter "lfs"]
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+
 [init]
-	defaultBranch = master
+    defaultBranch = master
+
 [commit]
-	gpgsign = true
+    gpgsign = true
+
+[includeIf "hasconfig:remote.*.url:git@git.soma.salesforce.com:*/**"]
+    path = ~/.gitconfig.work
+
+[includeIf "hasconfig:remote.*.url:git@github.com:mulesoft*/**"]
+    path = ~/.gitconfig.work
+
 [url "git@github.com:"]
-	insteadOf = "https://github.com/"
+  insteadOf = https://github.com/

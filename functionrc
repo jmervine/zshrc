@@ -311,7 +311,7 @@ function listen {
   [[ -z $port ]] && port=3000
   [[ -z $addr ]] && addr=0.0.0.0
 
-  x docker run --rm -it -p "$port:$port" -e PORT=$port -e ADDR=$addr jmervine/noop-server
+  x docker run --rm -it -p "$port:$port" -e PORT=$port -e ADDR=$addr -e VERBOSE=true jmervine/noop-server
 }
 
 ## Run Server to serve files from a local directory
@@ -498,5 +498,17 @@ function godocz {
   open http://localhost:6060/
   fg
 }
+
+function make_password {
+  #date +%s | sha256sum | base64 | head -c 16 ; echo
+  p=$(gpg --gen-random --armor 1 16)
+
+  # mac only
+  echo $p | pbcopy
+
+  echo $p
+}
+
+alias password=make_password
 
 # vim: ft=sh:

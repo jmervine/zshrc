@@ -20,7 +20,7 @@ export PYTHONPATH=/home/jmervine/Scripts/python/lib:$PYTHONPATH
 #############################################################
 # GOPATH
 #############################################################
-export PATH=/usr/local/go/bin:${PATH}
+#export PATH=/usr/local/go/bin:${PATH}
 export GOPATH=$HOME/.go
 export GOBIN=$HOME/.bin
 

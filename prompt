@@ -63,13 +63,13 @@ function _phc {
 }
 
 function precmd() {
-    local p_git_branch="`git_branch`"
-    if test "${p_git_branch}"
-    then
-      local p_git_branch="${p_git_branch}%{$reset_color%} "
-    else
-      local p_git_branch=" %T "
-    fi
+    # local p_git_branch="`git_branch`"
+    # if test "${p_git_branch}"
+    # then
+    #   local p_git_branch="${p_git_branch}%{$reset_color%} "
+    # else
+    #   local p_git_branch=" %T "
+    # fi
 
     local return_code="%(?..%{$fg[red]%}%?⌀%{$reset_color%})"
 
@@ -80,7 +80,7 @@ function precmd() {
     whoami | grep root > /dev/null && os_type="%{$fg[red]%}[%n@%m]"
 
     PS1="${os_type} %{$fg[blue]%}%~%{$reset_color%} $ "
-    RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [ %{$fg[blue]%}`kc_prompt`%{$reset_color%} | ${p_git_branch}`_phc`]"
+    # RPROMPT="%{$fg[red]%}${return_code} %{$reset_color%} [ %{$fg[blue]%}`kc_prompt`%{$reset_color%} | ${p_git_branch}`_phc`]"
 }
 
 autoload -U colors && colors
