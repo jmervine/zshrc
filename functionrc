@@ -125,7 +125,7 @@ function start_agent {
   chmod 600 "${SSH_ENV}"
   . "${SSH_ENV}" > /dev/null
 
-  for k in $(find ~/.ssh -type f -name "*_rsa"); do
+  for k in $(find ~/.ssh -type f -name "*_rsa") /Users/jmervine/.ssh/id_rsa_sfemu; do
     echo "Adding $k"
     /usr/bin/ssh-add $k
   done
@@ -510,5 +510,6 @@ function make_password {
 }
 
 alias password=make_password
+alias term="cursor ~/Development/scratch"
 
 # vim: ft=sh:

@@ -227,8 +227,13 @@
 [includeIf "hasconfig:remote.*.url:git@git.soma.salesforce.com:*/**"]
     path = ~/.gitconfig.work
 
-[includeIf "hasconfig:remote.*.url:git@github.com:mulesoft*/**"]
-    path = ~/.gitconfig.work
+[includeIf "hasconfig:remote.*.url:git@github.com:*emu/**"]
+    path = ~/.gitconfig.emu
 
-[url "git@github.com:"]
-  insteadOf = https://github.com/
+[includeIf "hasconfig:remote.*.url:git@emu.github.com:*emu/**"]
+    path = ~/.gitconfig.emu
+
+[includeIf "hasconfig:remote.*.url:git@github.com:!(*emu)/**"]
+    path = ~/.gitconfig.default
+
+# vi: ft=gitconfig
